@@ -300,7 +300,7 @@ function TankApp({ session, publicAccess = false }: { session?: Session; publicA
   return <SafeAreaView style={styles.safe}>
     <StatusBar style="dark" />
     <View style={styles.header}>
-      <View style={styles.headerCopy}><Text style={styles.brand}>VELYQUA · 维澜</Text><Text style={styles.tankName}>{tank.name}</Text></View>
+      <View style={styles.headerCopy}><Text style={styles.brand}>VELYQUA · 维澜</Text><Text style={styles.brandPromise}>Intelligence for Living Water</Text><Text style={styles.tankName}>{tank.name}</Text></View>
       {publicAccess ? <View style={styles.ownerButton} accessibilityLabel="Public guest access">
         <Text style={styles.ownerInitial}>G</Text>
         <Text numberOfLines={2} style={styles.saved}>Free public access{`\n`}Saved on this device</Text>
@@ -314,6 +314,17 @@ function TankApp({ session, publicAccess = false }: { session?: Session; publicA
       {tab === 'memory' && <TankMemory tank={tank} />}
       {tab === 'plan' && <TryChange tank={tank} />}
       {tab === 'library' && <Library />}
+      {publicAccess && <View style={styles.publicBridge}>
+        <Text style={styles.publicKicker}>AN OPEN EXPLORATION · BY ANDREW LAM</Text>
+        <Text style={styles.publicTitle}>Better observations. More thoughtful care.</Text>
+        <Text style={styles.publicCopy}>Try the prototype with your own observations. Have a living-water challenge, a useful source or an integration idea? Let’s explore it together.</Text>
+        <View style={styles.publicLinks}>
+          <Text accessibilityRole="link" onPress={() => { void Linking.openURL('https://authority-engine-app.vercel.app/contact?source=velyqua'); }} style={styles.publicPrimary}>Discuss VELYQUA ↗</Text>
+          <Text accessibilityRole="link" onPress={() => { void Linking.openURL('https://authority-engine-app.vercel.app/velyqua'); }} style={styles.publicLink}>Meet the project ↗</Text>
+          <Text accessibilityRole="link" onPress={() => { void Linking.openURL('https://github.com/AndrewLamSingapore/velyqua'); }} style={styles.publicLink}>Explore the source ↗</Text>
+        </View>
+        <Text style={styles.publicNote}>Working browser prototype. Real-water sensor validation and commercial outcomes remain unverified.</Text>
+      </View>}
     </ScrollView>
     <View style={styles.nav}>
       {(Object.keys(labels) as Tab[]).map((key) => <Pressable key={key} style={styles.navItem} onPress={() => setTab(key)} accessibilityRole="tab" accessibilityState={{ selected: tab === key }}>
@@ -435,6 +446,15 @@ function QuickUpdate({ tank, onClose, onSave }: { tank: Tank; onClose: () => voi
 }
 
 const styles = StyleSheet.create({
+  brandPromise: { fontSize: 14, color: colors.muted, marginTop: 4 },
+  publicBridge: { marginTop: 32, padding: 28, backgroundColor: '#071f27', borderRadius: 24, borderWidth: 1, borderColor: '#22505b' },
+  publicKicker: { color: '#91ddd1', fontSize: 12, letterSpacing: 1, lineHeight: 20, fontWeight: '700' },
+  publicTitle: { color: '#effffa', fontSize: 30, lineHeight: 36, fontWeight: '800', marginTop: 14 },
+  publicCopy: { color: '#b6d2d2', fontSize: 16, lineHeight: 26, marginTop: 14 },
+  publicLinks: { flexDirection: 'row', flexWrap: 'wrap', gap: 16, alignItems: 'center', marginTop: 24 },
+  publicPrimary: { backgroundColor: '#a7f3d0', color: '#09221e', fontSize: 16, fontWeight: '800', padding: 14, borderRadius: 12 },
+  publicLink: { color: '#a7f3d0', fontSize: 14, fontWeight: '700', paddingVertical: 12 },
+  publicNote: { color: '#a0bbbf', fontSize: 12, lineHeight: 20, marginTop: 22 },
   safe: { flex: 1, backgroundColor: colors.cloud },
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.cloud },
   loadingText: { color: colors.muted, marginTop: 12 },
@@ -448,7 +468,7 @@ const styles = StyleSheet.create({
   saved: { flex: 1, fontSize: 10, color: colors.muted, textAlign: 'right' },
   savedError: { color: colors.coral },
   body: { flex: 1 },
-  content: { padding: 20, paddingBottom: 120 },
+  content: { padding: 20, paddingBottom: 120, maxWidth: 1080, width: '100%', alignSelf: 'center' },
   eyebrow: { fontSize: 12, fontWeight: '900', letterSpacing: 1.6, color: colors.teal, marginTop: 8 },
   hero: { fontSize: 32, lineHeight: 38, fontWeight: '900', color: colors.navy, marginVertical: 10, marginBottom: 20 },
   statePill: { alignSelf: 'flex-start', borderRadius: 99, paddingVertical: 7, paddingHorizontal: 11, marginBottom: 14 },

@@ -11,7 +11,13 @@
 
 > **Reconstruction provenance:** `main` contains the clean-room 0.6 capability reconstruction created from `main@8ed08da`. It is not a recovery of the unavailable historical checkpoint `9c224ec`, and it does not close any external release gate. See [`RECONSTRUCTION_NOTICE.md`](RECONSTRUCTION_NOTICE.md).
 
-## A freshwater digital twin — and an experiment in earlier warning.
+## Intelligence for Living Water
+
+Software-first, hardware-agnostic water intelligence, beginning with aquariums. Manual tests, sensors, APIs and human observations feed a common observation model. The ESP32 is an R&D reference node, not a required proprietary device.
+
+[**Open VELYQUA ↗**](https://velyqua.vercel.app/) · [**Discuss this project**](https://authority-engine-app.vercel.app/contact?source=velyqua) · [**Meet Andrew Lam**](https://authority-engine-app.vercel.app/about)
+
+### Existing prototype
 
 **Current release: 0.3.1 · iPhone-first · freshwater-only · local-first**
 
