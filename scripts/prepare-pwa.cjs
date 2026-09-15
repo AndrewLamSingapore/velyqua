@@ -17,7 +17,8 @@ const head = [
   '<meta name="theme-color" content="#092f37">',
   '<meta name="apple-mobile-web-app-capable" content="yes">',
   '<meta name="apple-mobile-web-app-status-bar-style" content="default">',
-  '<link rel="apple-touch-icon" href="/velyqua-icon.png">'
+  '<link rel="apple-touch-icon" href="/velyqua-icon.png">',
+  '<link rel="icon" type="image/png" href="/velyqua-icon.png">'
 ].join('');
 if (!html.includes('manifest.webmanifest')) html = html.replace('</head>', `${head}</head>`);
 fs.writeFileSync(indexPath, html);
