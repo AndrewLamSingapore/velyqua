@@ -2,6 +2,15 @@
 
 # Changelog
 
+## 0.4.0 — Living-water product foundation
+
+- Replaced the engineering notebook shell with a polished responsive household dashboard.
+- Added explicit live, history, alerts, people and system experiences with honest physical-data boundaries.
+- Added the PRIME trusted-client adapter contract and application-scoped invitation/session guards.
+- Added versioned, idempotent telemetry admission with duplicate, late, invalid, clock and simulation handling.
+- Added a packaged PWA manifest, icon and offline shell that excludes API responses from caching.
+- Preserved the commissioned ESP32-S3 evidence while keeping physical sensors and real telemetry unverified.
+
 ## Unreleased — identity normalization — 2026-08-26
 
 - Established VELYQUA 维澜 as the sole current identity and `AndrewLamSingapore/velyqua` as the authoritative repository.

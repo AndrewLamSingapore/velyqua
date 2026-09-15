@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://velyqua.app/contracts/prime-trusted-client-v1.schema.json",
+  "title": "PRIME trusted client protocol for VELYQUA",
+  "description": "Application-facing contract. ABEX PRIME remains the identity, invitation, authorization and credential issuer.",
+  "type": "object",
+  "required": ["schema_version", "message_id", "message_type", "application", "occurred_at", "payload"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "message_id": { "type": "string", "minLength": 16, "maxLength": 128 },
+    "message_type": {
+      "enum": [
+        "invitation.requested", "invitation.issued", "invitation.accepted", "invitation.revoked",
+        "device.enrolled", "device.revoked", "session.issued", "session.refreshed", "session.revoked",
+        "telemetry.authorized", "audit.recorded"
+      ]
+    },
+    "application": {
+      "type": "object",
+      "required": ["application_id", "scope"],
+      "properties": {
+        "application_id": { "const": "velyqua" },
+        "scope": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "enum": ["aquarium.read", "telemetry.read", "care.write", "people.manage"] }
+        }
+      },
+      "additionalProperties": false
+    },
+    "person_ref": { "type": "string", "minLength": 1 },
+    "device_id": { "type": "string", "minLength": 8 },
+    "invitation_id": { "type": "string", "minLength": 8 },
+    "invitation_state": { "enum": ["ACTIVE", "USED", "EXPIRED", "REVOKED"] },
+    "credential_ref": { "type": "string", "minLength": 8, "description": "Opaque reference only; never credential material." },
+    "session_id": { "type": "string", "minLength": 8 },
+    "node_id": { "type": "string", "minLength": 8 },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "payload": { "type": "object" },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 512 },
+      "maxItems": 50
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": { "properties": { "message_type": { "pattern": "^invitation\\." } } },
+      "then": { "required": ["invitation_id", "invitation_state", "person_ref"] }
+    },
+    {
+      "if": { "properties": { "message_type": { "pattern": "^(device|session)\\." } } },
+      "then": { "required": ["device_id", "person_ref"] }
+    },
+    {
+      "if": { "properties": { "message_type": { "const": "telemetry.authorized" } } },
+      "then": { "required": ["device_id", "node_id", "credential_ref"] }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "name": "velyqua",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "private": true,
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
@@ -8,14 +8,14 @@
     "ios": "expo start --ios",
     "android": "expo start --android",
     "web": "expo start --web",
-    "build": "expo export --platform web --output-dir dist",
+    "build": "expo export --platform web --output-dir dist && node scripts/prepare-pwa.cjs",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run && node --test scripts/prime-relay-contract.cjs && node scripts/spine-policy-contract.cjs",
+    "test": "vitest run && node --test scripts/prime-relay-contract.cjs scripts/telemetry-contract.cjs && node scripts/spine-policy-contract.cjs",
     "verify": "node scripts/portfolio-contract-integrity.mjs && npm run typecheck && npm run check:server && npm test",
     "export:ios": "expo export --platform ios --output-dir dist",
     "release:check": "npm run verify && npm run export:ios",
     "smoke:production": "node scripts/production-smoke.cjs",
-    "check:server": "node --check api/health.js && node --check api/prime.js && node --check api/_spine.js && node --check api/spine.js && node --check api/device.js && node --check api/generated/portfolio-contracts.cjs && node --check scripts/spine-policy-contract.cjs && node --check scripts/production-smoke.cjs"
+    "check:server": "node --check api/health.js && node --check api/prime.js && node --check api/_spine.js && node --check api/_telemetry.js && node --check api/spine.js && node --check api/device.js && node --check api/generated/portfolio-contracts.cjs && node --check scripts/prepare-pwa.cjs && node --check scripts/spine-policy-contract.cjs && node --check scripts/telemetry-contract.cjs && node --check scripts/production-smoke.cjs"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",

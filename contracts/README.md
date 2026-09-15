@@ -2,6 +2,13 @@
 
 # VELYQUA Cross-Project Contracts
 
+## Application trust and telemetry
+
+- `prime-trusted-client-v1.schema.json` is the machine-readable VELYQUA to ABEX PRIME boundary. It keeps person, device, application, invitation, device credential and session identities distinct. VELYQUA consumes it; ABEX remains the issuer and authority.
+- `telemetry-v1.schema.json` is the versioned reading envelope for admitted physical readings and unmistakably labelled development fixtures.
+
+The trust adapter is fail closed until ABEX exposes and qualifies the matching protocol. No frontend field contains a PRIME administrative credential.
+
 VELYQUA is a physical-world execution and evidence-producing system. Its product and experimental safety/governance rules remain authoritative.
 
 ## Observation

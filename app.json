@@ -2,10 +2,17 @@
   "expo": {
     "name": "VELYQUA",
     "slug": "velyqua",
-    "version": "0.3.1",
+    "version": "0.4.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "scheme": "velyqua",
+    "web": {
+      "name": "VELYQUA",
+      "shortName": "VELYQUA",
+      "lang": "en",
+      "themeColor": "#092f37",
+      "backgroundColor": "#f3f7f5"
+    },
     "icon": "./assets/icon.png",
     "ios": {
       "supportsTablet": false,
@@ -27,6 +34,8 @@
       "resizeMode": "contain",
       "backgroundColor": "#F4F8F8"
     },
-    "plugins": ["expo-secure-store"]
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }
