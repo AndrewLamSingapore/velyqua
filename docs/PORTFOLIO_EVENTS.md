@@ -1,3 +1,5 @@
+> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This document describes this repository only; it cannot override the canonical architecture or establish live deployment status.
+
 # VELYQUA portfolio events
 
 VELYQUA can export governed observations into the shared portfolio event contract without granting PRIME write authority over tank state.

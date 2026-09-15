@@ -1,3 +1,5 @@
+> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This document describes this repository only; it cannot override the canonical architecture or establish live deployment status.
+
 # PRIME → VELYQUA Experiment Execution Boundary
 
 This increment implements the protocol boundary and its local persistence leg without changing VELYQUA's product SSOT or manual-first safety model.

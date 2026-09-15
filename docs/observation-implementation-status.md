@@ -1,3 +1,5 @@
+> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This document describes this repository only; it cannot override the canonical architecture or establish live deployment status.
+
 # Observation Contract implementation — 7 September 2026
 
 The server/bench acquisition module now validates Modbus CRC before register decoding, hashes exact source bytes, checks byte lengths, preserves correlation across retries, rejects repeated attempt IDs against supplied history, and checks acquisition-to-observation linkage. Existing Vitest CI runs its reference-vector fixtures.

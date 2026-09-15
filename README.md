@@ -1,3 +1,5 @@
+> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This document describes this repository only; it cannot override the canonical architecture or establish live deployment status.
+
 <p align="center">
   <img src="assets/icon.svg" width="180" alt="VELYQUA 维澜 logo">
 </p>

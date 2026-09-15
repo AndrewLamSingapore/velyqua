@@ -1,3 +1,5 @@
+> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This document describes this repository only; it cannot override the canonical architecture or establish live deployment status.
+
 # VELYQUA Cross-Project Contracts
 
 VELYQUA is a physical-world execution and evidence-producing system. Its product and experimental safety/governance rules remain authoritative.

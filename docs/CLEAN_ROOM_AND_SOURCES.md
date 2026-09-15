@@ -1,3 +1,5 @@
+> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This document describes this repository only; it cannot override the canonical architecture or establish live deployment status.
+
 # VELYQUA Clean-Room and Source Policy
 
 VELYQUA is an independent product. Publicly observable capabilities may be translated into abstract owner needs. Competitor expression must not enter the product.

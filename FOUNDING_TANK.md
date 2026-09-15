@@ -1,3 +1,5 @@
+> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This document describes this repository only; it cannot override the canonical architecture or establish live deployment status.
+
 # VELYQUA Founding Tank
 
 This is the first real aquarium used to shape and test VELYQUA. It belongs to VELYQUA's founder in Singapore.
