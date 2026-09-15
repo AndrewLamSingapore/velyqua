@@ -1,3 +1,5 @@
+> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This document describes this repository only; it cannot override the canonical architecture or establish live deployment status.
+
 # VELYQUA MVP Requirements
 
 **Baseline:** VELYQUA 2.0 + Ammonia Toxicity Fusion V1 (21 August 2026)

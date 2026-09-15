@@ -1,3 +1,5 @@
+> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This document describes this repository only; it cannot override the canonical architecture or establish live deployment status.
+
 # Observation intelligence implementation
 
 Staged runtime design: calibrated observations -> quality flags -> rolling features -> anomaly/risk score -> hypothesis -> owner-approved experiment -> measured outcome -> Portfolio Event. Physical actuation is explicitly out of scope and remains separately approval-gated.

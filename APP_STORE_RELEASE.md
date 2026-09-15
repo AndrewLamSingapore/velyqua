@@ -1,3 +1,5 @@
+> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This document describes this repository only; it cannot override the canonical architecture or establish live deployment status.
+
 # VELYQUA 0.3 — TestFlight and App Store release checklist
 
 The source is release-candidate ready when `npm run release:check` passes. A real TestFlight build still requires the owner-controlled Supabase, Expo and Apple accounts described in `SETUP_SIMPLE.md`.

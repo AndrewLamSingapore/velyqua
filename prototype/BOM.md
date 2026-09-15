@@ -1,3 +1,5 @@
+> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This document describes this repository only; it cannot override the canonical architecture or establish live deployment status.
+
 # Prototype V0 — Minimum Bill of Materials
 
 The BOM is intentionally technology-class based until sourcing is performed. Do not lock a vendor merely because it is cheap.

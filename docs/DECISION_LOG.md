@@ -1,3 +1,5 @@
+> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This document describes this repository only; it cannot override the canonical architecture or establish live deployment status.
+
 # VELYQUA Decision Log
 
 This log records material product decisions that affect scope, safety, privacy, architecture or release evidence. The VELYQUA 2.0 baseline supersedes conflicting v1.0 direction.

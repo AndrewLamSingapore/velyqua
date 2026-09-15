@@ -1,3 +1,5 @@
+> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This document describes this repository only; it cannot override the canonical architecture or establish live deployment status.
+
 # VELYQUA Prototype V0
 
 > Build the cheapest experimental instrument capable of proving that sensor fusion predicts aquarium risk better than periodic testing alone.
