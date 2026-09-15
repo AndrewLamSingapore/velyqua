@@ -23,3 +23,11 @@ describe('application-scoped trust boundary', () => {
     expect(serialized).not.toMatch(/token|credential|secret|session/i);
   });
 });
+
+
+it('fails closed on invalid session expiry and invalid clock', () => {
+  const now = new Date('2026-09-15T00:00:00Z');
+  expect(authorizeSession({ ...session, expiresAt: 'invalid' }, 'aquarium.read', now)).toBe(false);
+  expect(authorizeSession(session, 'aquarium.read', new Date('invalid'))).toBe(false);
+  expect(authorizeInvitationAcceptance({ ...invite, expiresAt: 'invalid' }, 'velyqua', now)).toBe(false);
+});
