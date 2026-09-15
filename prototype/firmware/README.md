@@ -32,3 +32,8 @@ Firmware must not hide calibration. Calibration identifiers and raw/reference co
 ## Next implementation gate
 
 Hardware-specific source code should be added only after exact sensor/interface modules are selected, because ADC scaling, electrical isolation, temperature compensation and calibration procedures depend on the actual hardware.
+
+The bare FireBeetle 2 ESP32-S3 development node is commissioned; see
+[`../../docs/ESP32_S3_COMMISSIONING_20260915.md`](../../docs/ESP32_S3_COMMISSIONING_20260915.md).
+That result does not advance sensor or real-telemetry status. The next physical
+gate remains exact sensor manufacturer/model and pin or terminal identification.

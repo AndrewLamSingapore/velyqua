@@ -7,3 +7,6 @@ coverage/
 .env.*
 !.env.example
 *.ipa
+prototype/firmware/firebeetle2_esp32s3_commissioning/secrets.h
+prototype/firmware/firebeetle2_esp32s3_commissioning/build/
+prototype/firmware/commissioning-evidence/
