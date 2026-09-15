@@ -41,6 +41,8 @@ import {
   syncPrimeOwnerBridge
 } from './src/integrations/primeCloudBridge';
 import { colors } from './src/theme';
+import { ProductDashboard } from './src/product/Dashboard';
+import { registerPwa } from './src/pwa';
 
 type Tab = 'now' | 'memory' | 'plan' | 'library';
 type SyncState = 'local' | 'syncing' | 'synced' | 'offline' | 'error';
@@ -103,6 +105,7 @@ export default function App() {
   const [recovering, setRecovering] = useState(false);
 
   useEffect(() => {
+    if (Platform.OS === 'web') registerPwa();
     if (publicAccessMode) {
       setBooting(false);
       return;
@@ -144,7 +147,6 @@ function TankApp({ session, publicAccess = false }: { session?: Session; publicA
   const client = publicAccess ? null : requireSupabase();
   const accountId = publicAccess ? publicAccountId : session!.user.id;
   const [record, setRecord] = useState<LocalTankRecord | null>(null);
-  const [tab, setTab] = useState<Tab>('now');
   const [quick, setQuick] = useState(false);
   const [account, setAccount] = useState(false);
   const [syncState, setSyncState] = useState<SyncState>('local');
@@ -299,39 +301,7 @@ function TankApp({ session, publicAccess = false }: { session?: Session; publicA
 
   return <SafeAreaView style={styles.safe}>
     <StatusBar style="dark" />
-    <View style={styles.header}>
-      <View style={styles.headerCopy}><Text style={styles.brand}>VELYQUA · 维澜</Text><Text style={styles.brandPromise}>Intelligence for Living Water</Text><Text style={styles.tankName}>{tank.name}</Text></View>
-      {publicAccess ? <View style={styles.ownerButton} accessibilityLabel="Public guest access">
-        <Text style={styles.ownerInitial}>G</Text>
-        <Text numberOfLines={2} style={styles.saved}>Free public access{`\n`}Saved on this device</Text>
-      </View> : <Pressable onPress={() => setAccount(true)} accessibilityLabel="Owner account" style={styles.ownerButton}>
-        <Text style={styles.ownerInitial}>{(session?.user.email?.[0] ?? 'O').toUpperCase()}</Text>
-        <Text numberOfLines={2} style={[styles.saved, syncState === 'error' && styles.savedError]}>{syncLabels[syncState]}</Text>
-      </Pressable>}
-    </View>
-    <ScrollView style={styles.body} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-      {tab === 'now' && <AquaNow tank={tank} onPreview={() => setTab('plan')} />}
-      {tab === 'memory' && <TankMemory tank={tank} />}
-      {tab === 'plan' && <TryChange tank={tank} />}
-      {tab === 'library' && <Library />}
-      {publicAccess && <View style={styles.publicBridge}>
-        <Text style={styles.publicKicker}>AN OPEN EXPLORATION · BY ANDREW LAM</Text>
-        <Text style={styles.publicTitle}>Better observations. More thoughtful care.</Text>
-        <Text style={styles.publicCopy}>Try the prototype with your own observations. Have a living-water challenge, a useful source or an integration idea? Let’s explore it together.</Text>
-        <View style={styles.publicLinks}>
-          <Text accessibilityRole="link" onPress={() => { void Linking.openURL('https://authority-engine-app.vercel.app/contact?source=velyqua'); }} style={styles.publicPrimary}>Discuss VELYQUA ↗</Text>
-          <Text accessibilityRole="link" onPress={() => { void Linking.openURL('https://authority-engine-app.vercel.app/velyqua'); }} style={styles.publicLink}>Meet the project ↗</Text>
-          <Text accessibilityRole="link" onPress={() => { void Linking.openURL('https://github.com/AndrewLamSingapore/velyqua'); }} style={styles.publicLink}>Explore the source ↗</Text>
-        </View>
-        <Text style={styles.publicNote}>Working browser prototype. Real-water sensor validation and commercial outcomes remain unverified.</Text>
-      </View>}
-    </ScrollView>
-    <View style={styles.nav}>
-      {(Object.keys(labels) as Tab[]).map((key) => <Pressable key={key} style={styles.navItem} onPress={() => setTab(key)} accessibilityRole="tab" accessibilityState={{ selected: tab === key }}>
-        <Text style={[styles.navText, tab === key && styles.navActive]}>{labels[key]}</Text>
-      </Pressable>)}
-      <Pressable accessibilityLabel="Quick Update" style={styles.plus} onPress={() => setQuick(true)}><Text style={styles.plusText}>＋</Text></Pressable>
-    </View>
+    <ProductDashboard tank={tank} syncLabel={statusLabel} publicAccess={publicAccess} onQuickUpdate={() => setQuick(true)} onAccount={() => { if (!publicAccess) setAccount(true); }} />
     {quick && <QuickUpdate tank={tank} onClose={() => setQuick(false)} onSave={updateTank} />}
     {account && client && session && <AccountSheet client={client} session={session} syncLabel={statusLabel} onClose={() => setAccount(false)} onSync={sync} />}
   </SafeAreaView>;

@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_type": "velyqua_product_predeployment_qualification",
+  "observed_at_utc": "2026-09-15T06:38:00Z",
+  "source": {
+    "repository": "AndrewLamSingapore/velyqua",
+    "base_sha": "0cf0c52285f28daa93511c07c3cd838a0b26dadc",
+    "branch": "codex/velyqua-product-20260915",
+    "prime_manifest_revision": "94c19de5c746b58d11b7fa2bf8d03fb6fa99837e"
+  },
+  "qualification": {
+    "npm_verify": {
+      "status": "PASS",
+      "vitest_files": 19,
+      "vitest_tests": 80,
+      "node_contract_tests": 6
+    },
+    "web_export": {
+      "status": "PASS",
+      "pwa_assets_packaged": true
+    },
+    "desktop_browser": {
+      "status": "PASS",
+      "meaningful_content": true,
+      "console_errors": 0
+    },
+    "mobile_browser": {
+      "status": "PASS",
+      "viewport": "390x844",
+      "horizontal_overflow": false,
+      "console_errors": 0
+    },
+    "supabase_migration": {
+      "status": "PASS",
+      "project_ref": "bksyjvppcwfgwoelnyvp",
+      "rls_unchanged": true,
+      "unique_replay_indexes_verified": 2
+    },
+    "secret_scan": {
+      "status": "PASS"
+    }
+  },
+  "contracts": {
+    "prime_trusted_client_sha256": "2830a78be0e37c065b8d542834cc7be9b1eb78cde284618029765b9f493fc6a5",
+    "telemetry_sha256": "f419ff8235fac4efda8a3565bc16f1bec72184928c04f72d6b926ed2b2d8eb63"
+  },
+  "boundaries": {
+    "esp32_foundation": "HISTORICAL_TERMINAL_PASS_PRESERVED",
+    "esp32_application_link": "UNVERIFIED",
+    "physical_sensors": "UNTESTED",
+    "real_sensor_telemetry": "UNTESTED",
+    "prime_trust_adapter": "READY_NOT_INTEGRATED",
+    "production_deployment": "NOT_YET_ATTEMPTED"
+  }
+}

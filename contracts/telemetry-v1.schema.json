@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://velyqua.app/contracts/telemetry-v1.schema.json",
+  "title": "VELYQUA admitted telemetry reading",
+  "type": "object",
+  "required": ["schema_version", "reading_id", "node_id", "sensor_id", "sequence", "observed_at", "raw_value", "normalized_value", "unit", "simulated"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "reading_id": { "type": "string", "minLength": 8, "maxLength": 128 },
+    "node_id": { "type": "string", "minLength": 8, "maxLength": 128 },
+    "sensor_id": { "type": "string", "minLength": 8, "maxLength": 128 },
+    "sequence": { "type": "integer", "minimum": 0 },
+    "observed_at": { "type": "string", "format": "date-time" },
+    "raw_value": { "type": "number" },
+    "normalized_value": { "type": "number" },
+    "unit": { "type": "string", "minLength": 1, "maxLength": 32 },
+    "simulated": { "type": "boolean" },
+    "quality_flags": { "type": "array", "uniqueItems": true, "items": { "enum": ["LATE", "CLOCK_SKEW", "CALIBRATION_DUE", "OUT_OF_RANGE"] } },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": false
+}

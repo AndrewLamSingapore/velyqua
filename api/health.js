@@ -29,7 +29,7 @@ module.exports = function handler(req, res) {
   return res.status(ready ? 200 : 503).json({
     ok: ready,
     service: 'velyqua',
-    product_version: '0.3.1',
+    product_version: '0.4.0',
     revision: process.env.VERCEL_GIT_COMMIT_SHA || null,
     commercial_isolation: true,
     cloud: { configured: cloudConfigured },

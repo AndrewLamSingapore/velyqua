@@ -1,0 +1,13 @@
+{
+  "name": "VELYQUA — Intelligence for Living Water",
+  "short_name": "VELYQUA",
+  "description": "Calm, evidence-led aquarium health and living-water intelligence.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3f7f5",
+  "theme_color": "#092f37",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/velyqua-icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
