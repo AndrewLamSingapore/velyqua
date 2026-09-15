@@ -2,7 +2,12 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "cleanUrls": true,
+  "functions": { "api/trust.js": { "maxDuration": 30 } },
   "rewrites": [
+    {
+      "source": "/trust/v1/velyqua/:operation*",
+      "destination": "/api/trust?operation=:operation*"
+    },
     {
       "source": "/api/prime-events",
       "destination": "/api/prime?route=events"

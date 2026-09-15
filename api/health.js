@@ -34,6 +34,14 @@ module.exports = function handler(req, res) {
     commercial_isolation: true,
     cloud: { configured: cloudConfigured },
     stable_spine: { server_configured: spineServerConfigured, required_for_health: false },
+    prime_trust: {
+      relay_configured: secureUrl(process.env.PRIME_TRUST_RELAY_URL)
+        && secureUrl(process.env.PRIME_TRUST_ORIGIN)
+        && configured(process.env.PRIME_TRUST_RELAY_TOKEN)
+        && /^[a-f0-9]{64}$/.test(process.env.PRIME_TRUST_ENVELOPE_KEY || ''),
+      enrollment_owner_locked: true,
+      authority: 'ABEX PRIME; configuration alone does not establish admission'
+    },
     legacy_personal_jarvis_bridge: { enabled: legacyPrimeEnabled },
     safety_boundary: 'deterministic policy gate; physical execution remains fail-closed without a verified adapter'
   });

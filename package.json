@@ -15,7 +15,7 @@
     "export:ios": "expo export --platform ios --output-dir dist",
     "release:check": "npm run verify && npm run export:ios",
     "smoke:production": "node scripts/production-smoke.cjs",
-    "check:server": "node --check api/health.js && node --check api/prime.js && node --check api/_spine.js && node --check api/_telemetry.js && node --check api/spine.js && node --check api/device.js && node --check api/generated/portfolio-contracts.cjs && node --check scripts/prepare-pwa.cjs && node --check scripts/spine-policy-contract.cjs && node --check scripts/telemetry-contract.cjs && node --check scripts/production-smoke.cjs"
+    "check:server": "node --check api/health.js && node --check api/prime.js && node --check api/_spine.js && node --check api/_telemetry.js && node --check api/spine.js && node --check api/device.js && node --check api/generated/portfolio-contracts.cjs && node --check scripts/prepare-pwa.cjs && node --check scripts/spine-policy-contract.cjs && node --check scripts/telemetry-contract.cjs && node --check scripts/production-smoke.cjs && node --check api/trust.js && node --check api/_trust-envelope.cjs"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
