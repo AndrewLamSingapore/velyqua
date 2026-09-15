@@ -15,3 +15,10 @@ describe('invitation lifecycle', () => {
     expect(invitationState({ ...base, state }, new Date('2026-09-15T00:00:00Z'))).toBe(state);
   });
 });
+
+
+it('fails closed on invalid invitation expiry and invalid clock', () => {
+  const now = new Date('2026-09-15T00:00:00Z');
+  expect(invitationCanBeAccepted({ ...base, expiresAt: 'invalid' }, now)).toBe(false);
+  expect(invitationCanBeAccepted(base, new Date('invalid'))).toBe(false);
+});

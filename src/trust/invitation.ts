@@ -2,7 +2,9 @@ import { Invitation, InvitationState } from './types';
 
 export function invitationState(invitation: Invitation, now = new Date()): InvitationState {
   if (invitation.state === 'USED' || invitation.state === 'REVOKED') return invitation.state;
-  return Date.parse(invitation.expiresAt) <= now.getTime() ? 'EXPIRED' : 'ACTIVE';
+  const expires = Date.parse(invitation.expiresAt);
+  const current = now.getTime();
+  return !Number.isFinite(expires) || !Number.isFinite(current) || expires <= current ? 'EXPIRED' : 'ACTIVE';
 }
 
 export function invitationCanBeAccepted(invitation: Invitation, now = new Date()): boolean {
