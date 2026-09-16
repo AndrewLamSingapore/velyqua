@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { evaluateTank } from '../domain/decisionEngine';
 import { Tank } from '../domain/types';
+import { createPrimeTrustAdapter } from '../trust/prime-trust-adapter';
 
 type Screen = 'home' | 'live' | 'history' | 'alerts' | 'people' | 'system';
 
@@ -106,17 +107,32 @@ function Alerts() {
 }
 
 function People() {
+  const [trust, setTrust] = useState('Checking PRIME connection');
+  useEffect(() => {
+    let active = true;
+    if (typeof window === 'undefined' || window.location.protocol !== 'https:') {
+      setTrust('Secure web connection required'); return;
+    }
+    const adapter = createPrimeTrustAdapter(window.location.origin);
+    adapter.currentSession().then(async session => {
+      if (!session) { if (active) setTrust('This device has no active VELYQUA access'); return; }
+      const people = await adapter.listPeople();
+      const own = people.find(person => person.personId === session.personId);
+      if (active) setTrust(own ? `Connected as ${own.displayName}` : 'PRIME identity verification unavailable');
+    }).catch(() => { if (active) setTrust('PRIME connection unavailable'); });
+    return () => { active = false; };
+  }, []);
   return <><Text style={styles.kicker}>TRUSTED PEOPLE & DEVICES</Text><Text style={styles.hero}>Invite once. Stay connected securely.</Text><Text style={styles.subhero}>Person, device, application, invitation, credential and session remain separate.</Text>
-    <Panel tone="amber"><View style={styles.between}><View style={styles.grow}><Text style={styles.panelTitle}>PRIME enrollment integration pending</Text><Text style={styles.panelBody}>The VELYQUA client contract is ready. Invitations remain unavailable until ABEX supplies the corrected durable trust protocol.</Text></View><Pill tone="warn">FAIL CLOSED</Pill></View></Panel>
+    <Panel tone="amber"><View style={styles.between}><View style={styles.grow}><Text style={styles.panelTitle}>{trust}</Text><Text style={styles.panelBody}>New invitations are paused by the owner. Existing access is checked with PRIME.</Text></View><Pill tone="warn">ENROLLMENT PAUSED</Pill></View></Panel>
     <Text style={styles.sectionTitle}>Expected invitation journey</Text><Panel><View style={styles.step}><Text style={styles.stepNumber}>1</Text><View><Text style={styles.stepTitle}>Owner chooses access</Text><Text style={styles.panelBody}>Aquarium, telemetry and care permissions are application-scoped.</Text></View></View><View style={styles.step}><Text style={styles.stepNumber}>2</Text><View><Text style={styles.stepTitle}>One secure invitation</Text><Text style={styles.panelBody}>QR or link has an explicit ACTIVE, USED, EXPIRED or REVOKED state.</Text></View></View><View style={styles.step}><Text style={styles.stepNumber}>3</Text><View><Text style={styles.stepTitle}>Device enrolls once</Text><Text style={styles.panelBody}>The device refreshes sessions without storing a permanent bearer token.</Text></View></View></Panel>
-    <Pressable accessibilityState={{ disabled: true }} style={styles.disabledButton}><Text style={styles.disabledText}>Invite person · integration pending</Text></Pressable>
+    <Pressable accessibilityState={{ disabled: true }} style={styles.disabledButton}><Text style={styles.disabledText}>Invite person · owner paused</Text></Pressable>
   </>;
 }
 
 function System({ syncLabel }: { syncLabel: string }) {
   return <><Text style={styles.kicker}>SYSTEM</Text><Text style={styles.hero}>Health without the engineering noise.</Text><Text style={styles.subhero}>Open diagnostics only when you need the evidence.</Text>
     <Panel><View style={styles.between}><View style={styles.grow}><Text style={styles.panelTitle}>{commissionedNode.displayName}</Text><Text style={styles.panelBody}>{commissionedNode.hardware}</Text></View><Pill tone="warn">LINK PENDING</Pill></View><View style={styles.infoRow}><Text style={styles.infoLabel}>Stable identity</Text><Text style={styles.infoValue}>{commissionedNode.nodeId}</Text></View><View style={styles.infoRow}><Text style={styles.infoLabel}>Firmware</Text><Text style={styles.infoValue}>{commissionedNode.firmware}</Text></View><View style={styles.infoRow}><Text style={styles.infoLabel}>Physical commissioning</Text><Text style={styles.infoValue}>PASS</Text></View><Text style={styles.evidence}>{commissionedNode.evidence}</Text></Panel>
-    <Text style={styles.sectionTitle}>Connections</Text><Panel><View style={styles.infoRow}><Text style={styles.infoLabel}>Aquarium record</Text><Text style={styles.infoValue}>{syncLabel}</Text></View><View style={styles.infoRow}><Text style={styles.infoLabel}>ESP32 application link</Text><Text style={styles.infoValue}>Not observed</Text></View><View style={styles.infoRow}><Text style={styles.infoLabel}>Physical sensors</Text><Text style={styles.infoValue}>Untested</Text></View><View style={styles.infoRow}><Text style={styles.infoLabel}>PRIME trust</Text><Text style={styles.infoValue}>Adapter ready</Text></View></Panel>
+    <Text style={styles.sectionTitle}>Connections</Text><Panel><View style={styles.infoRow}><Text style={styles.infoLabel}>Aquarium record</Text><Text style={styles.infoValue}>{syncLabel}</Text></View><View style={styles.infoRow}><Text style={styles.infoLabel}>ESP32 application link</Text><Text style={styles.infoValue}>Not observed</Text></View><View style={styles.infoRow}><Text style={styles.infoLabel}>Physical sensors</Text><Text style={styles.infoValue}>Untested</Text></View><View style={styles.infoRow}><Text style={styles.infoLabel}>PRIME trust</Text><Text style={styles.infoValue}>See People for connection</Text></View></Panel>
     <Text style={styles.sectionTitle}>Product boundary</Text><Panel><Text style={styles.panelBody}>VELYQUA owns aquarium observations. ABEX PRIME owns trusted identity, enrollment, authorization and production authority. This client cannot grant itself PRIME authority.</Text></Panel>
   </>;
 }
