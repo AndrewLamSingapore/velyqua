@@ -3,7 +3,9 @@ import { invitationCanBeAccepted } from './invitation';
 
 export function authorizeSession(session: TrustSession | null, permission: VelyquaPermission, now = new Date()): boolean {
   if (!session || session.applicationId !== 'velyqua') return false;
-  if (Date.parse(session.expiresAt) <= now.getTime()) return false;
+  const expires = Date.parse(session.expiresAt);
+  const current = now.getTime();
+  if (!Number.isFinite(expires) || !Number.isFinite(current) || expires <= current) return false;
   return session.permissions.includes(permission);
 }
 
