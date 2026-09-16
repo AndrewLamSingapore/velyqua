@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 
 const projects: Array<[string, string, string]> = [
+  ['JARVIS PRIME', 'Try a decision walkthrough and inspect the reasoning', 'https://authority-engine-app.vercel.app/jarvis?utm_source=velyqua&utm_medium=cross_app'],
   ['Authority Engine', 'Operations, analytics and Andrew’s work', 'https://authority-engine-app.vercel.app/'],
   ['The Portal', 'Explore connections between ideas', 'https://the-portal-ten.vercel.app/'],
   ['Living Worlds', 'Make a choice in an interactive world', 'https://game-platform-wine-nine.vercel.app/'],
