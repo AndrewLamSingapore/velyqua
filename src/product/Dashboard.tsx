@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { evaluateTank } from '../domain/decisionEngine';
 import { Tank } from '../domain/types';
+import { CreatorConnection } from './CreatorConnection';
 
 type Screen = 'home' | 'live' | 'history' | 'alerts' | 'people' | 'system';
 
@@ -52,7 +53,7 @@ function Home({ tank, onQuickUpdate }: { tank: Tank; onQuickUpdate: () => void }
   const state = tank.readings.length ? recommendation.state : 'more_information_needed';
   return <>
     <View style={styles.heroRow}>
-      <View style={styles.heroCopy}><Text style={styles.kicker}>FOUNDING TANK</Text><Text style={styles.hero}>A calm view of your living water.</Text><Text style={styles.subhero}>See what matters, understand what changed, and act only when the evidence supports it.</Text></View>
+      <View style={styles.heroCopy}><Text style={styles.kicker}>FOUNDING TANK</Text><Text style={styles.hero}>Understand your water. Care with clarity.</Text><Text style={styles.subhero}>A clearer picture of your aquarium, one observation at a time. Explore the app, add a water test, and help shape what comes next.</Text></View>
       <View style={styles.heroOrb}><Text style={styles.heroOrbWater}>≈</Text><Text style={styles.heroOrbText}>{state === 'all_clear' ? 'CALM' : 'LEARNING'}</Text></View>
     </View>
     <Panel tone="dark">
@@ -134,7 +135,7 @@ export function ProductDashboard({ tank, syncLabel, publicAccess, onQuickUpdate,
     </View>
     <View style={styles.main}>
       <View style={styles.topbar}><View><Text style={styles.topTank}>{tank.name}</Text><Text style={styles.topStatus}>{syncLabel}</Text></View><Pressable onPress={onAccount} style={styles.avatar}><Text style={styles.avatarText}>{publicAccess ? 'G' : 'A'}</Text></Pressable></View>
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>{content}<Text style={styles.footer}>VELYQUA · Intelligence for Living Water · Evidence before intervention</Text></ScrollView>
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>{content}{screen === 'home' && <CreatorConnection />}<Text style={styles.footer}>VELYQUA · Intelligence for Living Water · Evidence before intervention</Text></ScrollView>
       <Pressable onPress={onQuickUpdate} accessibilityLabel="Add observation" style={styles.fab}><Text style={styles.fabText}>＋</Text></Pressable>
     </View>
   </View>;
