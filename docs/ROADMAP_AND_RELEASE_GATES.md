@@ -6,7 +6,7 @@ VELYQUA proves one trusted freshwater decision loop before adding breadth. Stage
 
 ## Current position
 
-Version 0.3.1 is a cloud-enabled vertical slice plus the VELYQUA OS foundation.
+The current source package is 0.4.0, as recorded in `../package.json`. The responsive web prototype is published; native store distribution and real-water validation require separate evidence.
 
 It includes working manual capture, Aqua Now states, Tank Memory history, water-change preview, owner accounts, local-first document writes, private Supabase sync, merge handling, export, deletion and a governed capability registry. It does not represent the complete P0 product.
 
@@ -26,17 +26,17 @@ Account-bound launch work remains outside the repository: the founder must activ
 
 ## Next implementation focus
 
-The next customer release should close the gap between the 0.3.1 vertical slice and the P0 contract:
+The following are acceptance targets, not a claim that every item is absent from source. Assess them against current capability records and tests:
 
 1. complete onboarding and Sign in with Apple;
-2. move local records to a transactional outbox without losing existing acknowledged data;
+2. independently verify transactional outbox durability on physical client devices;
 3. finish inventory correction, private photo storage and metadata stripping;
 4. complete one-action Aqua Now evidence and rule withdrawal;
 5. add Quiet Plan, outcome checks and immutable scenario records;
 6. build reviewed Singapore content operations and coverage measurement; and
 7. complete monitoring, restore, accessibility, privacy and App Store evidence.
 
-Camera-assisted strip reading, caretaker access, equipment depth and compatibility follow only after the core loop is proven. Android, owner-facing web, sensors, controllers and professional operations require later market evidence.
+Camera-assisted strip reading, caretaker access, equipment depth and compatibility follow only after the core loop is proven. The owner-facing web prototype already exists. Wider platform distribution, validated aquatic sensors, controllers and professional operations require additional evidence.
 
 ## Beta seed scenarios
 

@@ -19,14 +19,20 @@ Software-first, hardware-agnostic water intelligence, beginning with aquariums. 
 
 [**Open VELYQUA ↗**](https://velyqua.vercel.app/) · [**Discuss this project**](https://authority-engine-app.vercel.app/contact?source=velyqua) · [**Meet Andrew Lam**](https://authority-engine-app.vercel.app/about)
 
+## Connected work
+
+[**Explore JARVIS PRIME**](https://authority-engine-app.vercel.app/jarvis) · [**Meet Andrew**](https://authority-engine-app.vercel.app/about) · [**Start a conversation**](https://authority-engine-app.vercel.app/contact?source=velyqua&intent=collaboration)
+
+JARVIS PRIME’s public walkthrough connects this project to Andrew’s wider work. Public navigation and enquiries do not merge accounts, data or runtime authority. Current operational evidence comes from the canonical portfolio record; this README describes source capabilities.
+
 ### Existing prototype
 
-**Current release: 0.3.1 · iPhone-first · freshwater-only · local-first**
+**Source package: 0.4.0 · Responsive web and mobile source · Freshwater · Manual-first**
 
 VELYQUA is built around one question:
 
 > **Can inexpensive continuous signals detect developing aquarium risk earlier or more meaningfully than periodic testing alone?**
-**Status:** Observation Contract v1 is design-frozen. Gate 1 implementation has not yet been verified. The initial post–Gate 3 delivery hypothesis is an API, responsive web dashboard and notifications. No native application is committed.
+**Status:** Observation Contract v1 remains design-frozen. Gate 1 acquisition-integrity groundwork has reference-vector tests; complete validator acceptance and aquatic sensor suitability remain unverified. The responsive web prototype is public. Expo mobile source and iOS export checks exist; an App Store or TestFlight release is not asserted. See [implementation evidence](docs/observation-implementation-status.md) and [commissioning record](docs/ESP32_S3_COMMISSIONING_20260915.md).
 
 ---
 
@@ -185,9 +191,9 @@ Before release, run `npm run release:check`, use the [App Store checklist](APP_S
 
 ---
 
-## What 0.3.1 means
+## Source capability and release evidence
 
-Version 0.3.1 is a **testable cloud-enabled vertical slice plus governed product foundations**.
+`package.json` is the source-package version authority. The current app includes **working software and governed product foundations**; version numbers do not establish physical validation or commercial release.
 
 It does not claim that every registered capability or P0 requirement is built. It does not claim that the physical early-warning hypothesis has been proven. And code alone cannot place a build in TestFlight: Supabase, Apple Developer, App Store Connect and Expo/EAS account-bound steps must be completed by the owner.
 
