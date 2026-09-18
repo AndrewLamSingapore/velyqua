@@ -1,6 +1,6 @@
 const SERVICE_WORKER_PATH = '/sw.js';
 
-function isPwaRegistrationAllowed(): boolean {
+export function isPwaRegistrationAllowed(): boolean {
   if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
   if (!('serviceWorker' in navigator)) return false;
 
@@ -11,18 +11,13 @@ function isPwaRegistrationAllowed(): boolean {
 }
 
 export function registerPwa(): void {
-  if (!isPwaRegistrationAllowed()) {
-    return;
-  }
+  if (!isPwaRegistrationAllowed()) return;
 
   window.addEventListener('load', () => {
     void navigator.serviceWorker
       .getRegistration(SERVICE_WORKER_PATH)
       .then((existingRegistration) => {
-        if (existingRegistration) {
-          return;
-        }
-
+        if (existingRegistration) return;
         return navigator.serviceWorker.register(SERVICE_WORKER_PATH);
       })
       .catch((error: unknown) => {
