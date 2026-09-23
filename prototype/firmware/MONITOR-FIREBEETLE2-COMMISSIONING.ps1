@@ -2,7 +2,9 @@
 param(
     [string]$Port = 'COM8',
     [int]$StabilityMinutes = 35,
-    [string]$EvidenceDirectory = ''
+    [string]$EvidenceDirectory = '',
+    [string]$EsptoolPath = '',
+    [switch]$ResolveToolsOnly
 )
 
 $ErrorActionPreference = 'Stop'
@@ -10,11 +12,74 @@ if (!$EvidenceDirectory) {
     $runId = (Get-Date).ToUniversalTime().ToString('yyyyMMddTHHmmssZ')
     $EvidenceDirectory = Join-Path $PSScriptRoot "commissioning-evidence\$runId"
 }
+# ---------------------------------------------------------------------------
+# Tool resolution.
+#
+# The commissioning runner (RUN-FIREBEETLE2-COMMISSIONING.ps1) drives the
+# arduino-cli that ships inside the Arduino IDE. That CLI installs the ESP32
+# core and its bundled tools into %LOCALAPPDATA%\Arduino15\packages. esptool is
+# resolved from that same package tree, so the commissioning and monitoring
+# stages always agree on which toolchain ran.
+#
+# Resolution order:
+#   1. an explicit -EsptoolPath (must exist);
+#   2. the newest esptool_py version under the Arduino15 package tree;
+#   3. the legacy %TEMP% staging tree, kept only as a last-resort fallback.
+#
+# The previous version hard-coded option 3's 5.3.1 path, which was not a real
+# installation location and carried no existence check, so the script failed at
+# the first esptool invocation with a misleading "reset failed" message.
+function Resolve-Esptool {
+    param([string]$Explicit)
+
+    if ($Explicit) {
+        if (Test-Path -LiteralPath $Explicit -PathType Leaf) { return (Resolve-Path -LiteralPath $Explicit).Path }
+        throw "The -EsptoolPath value does not exist: $Explicit"
+    }
+
+    $roots = @(
+        (Join-Path $env:LOCALAPPDATA 'Arduino15\packages\esp32\tools\esptool_py'),
+        (Join-Path $env:TEMP 'jarvis-esp32-tooling\data\packages\esp32\tools\esptool_py')
+    )
+    $searched = New-Object System.Collections.Generic.List[string]
+    foreach ($root in $roots) {
+        if (!(Test-Path -LiteralPath $root)) { continue }
+        $versions = Get-ChildItem -LiteralPath $root -Directory -ErrorAction SilentlyContinue |
+            Sort-Object { try { [version]$_.Name } catch { [version]'0.0' } } -Descending
+        foreach ($v in $versions) {
+            $candidate = Join-Path $v.FullName 'esptool.exe'
+            $searched.Add($candidate)
+            if (Test-Path -LiteralPath $candidate -PathType Leaf) { return (Resolve-Path -LiteralPath $candidate).Path }
+        }
+    }
+
+    $detail = if ($searched.Count) { $searched -join '; ' } else { 'no esptool_py directories found' }
+    $message = 'esptool.exe could not be located. Searched: ' + $detail
+    $message += '. Run RUN-FIREBEETLE2-COMMISSIONING.ps1 first so the Arduino IDE installs the ESP32 core and its bundled tools, or pass -EsptoolPath explicitly.'
+    throw $message
+}
+
+$esptool = Resolve-Esptool -Explicit $EsptoolPath
+
+if ($ResolveToolsOnly) {
+    [ordered]@{
+        resolved_esptool = $esptool
+        exists           = (Test-Path -LiteralPath $esptool -PathType Leaf)
+        host             = $env:COMPUTERNAME
+        resolved_at_utc  = (Get-Date).ToUniversalTime().ToString('o')
+    } | ConvertTo-Json
+    exit 0
+}
+
+# The monitor lock is taken only after tool resolution succeeds, so a broken
+# toolchain no longer leaves the mutex held and blocks the next run with a
+# misleading "already active" message. It is released in the finally block at
+# the end of this script, on every exit path.
 $createdNew = $false
 $monitorMutex = [Threading.Mutex]::new($true, 'Global\VELYQUA-FIREBEETLE2-MONITOR', [ref]$createdNew)
 if (!$createdNew) { throw 'A VELYQUA commissioning monitor is already active.' }
 
-$esptool = 'C:\Users\User\AppData\Local\Temp\jarvis-esp32-tooling\data\packages\esp32\tools\esptool_py\5.3.1\esptool.exe'
+try {
 $serialLog = Join-Path $EvidenceDirectory 'repair-serial.ndjson'
 $monitorLog = Join-Path $EvidenceDirectory 'repair-monitor.log'
 $resetLog = Join-Path $EvidenceDirectory 'repair-reset.log'
@@ -135,4 +200,8 @@ $receipt = [ordered]@{
 }
 $receipt | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $EvidenceDirectory 'repair-commissioning-receipt.json') -Encoding utf8
 $receipt | ConvertTo-Json -Depth 8
+} finally {
+    try { $monitorMutex.ReleaseMutex() } catch { }
+    try { $monitorMutex.Dispose() } catch { }
+}
 if ($status -ne 'PASS') { exit 2 }
