@@ -10,7 +10,7 @@ VELYQUA is a freshwater aquarium record and decision-support application operate
 
 - **Account information:** the email address and authentication information needed to create and protect an account. Passwords are handled by Supabase Auth; VELYQUA does not receive or store a readable copy.
 - **Aquarium information:** tank details, manually entered water-test results, care activities, owner observations and optional livestock, plant, equipment and care-plan records.
-- **Technical session information:** encrypted authentication tokens on the owner's device and the minimum database metadata required to synchronise records.
+- **Technical session information:** authentication session tokens stored on the owner's device or in browser storage, plus the minimum database metadata required to synchronise records.
 
 Version 0.3 does not use advertising identifiers, analytics trackers or precise device location, and it does not collect contacts, payment information or photographs. The data contract can support owner-added photographs in a later release, but the current customer workflow does not upload or store them.
 
@@ -20,7 +20,7 @@ VELYQUA uses this information only to authenticate the owner, remember aquarium 
 
 ## Storage and service providers
 
-Tank and account records are stored in the VELYQUA Supabase project. Supabase provides authentication, database and server functions. A signed-in owner can access only their own tank records through database Row Level Security. Authentication tokens are kept in encrypted device storage. Local tank changes are saved on the device before synchronisation begins.
+Tank and account records are stored in the VELYQUA Supabase project. Supabase provides authentication, database and server functions. A signed-in owner can access only their own tank records through database Row Level Security. The native iOS and Android clients use Expo SecureStore for authentication session tokens. The web client persists authentication sessions through AsyncStorage in browser storage; VELYQUA does not encrypt those browser-held tokens. On a shared browser, sign out and clear the site's stored data when finished. Local tank changes are saved on the device or browser before synchronisation begins.
 
 Apple and Expo may process build, distribution and TestFlight information under their own policies; VELYQUA does not send aquarium records to them for advertising.
 
@@ -42,4 +42,4 @@ VELYQUA is a general aquarium-management tool and is not directed to children un
 
 ## Changes and contact
 
-Material changes will be dated in this file. Questions can be sent to the project owner through [AndrewLamSingapore on GitHub](https://github.com/AndrewLamSingapore).
+The 3 October 2026 source-accuracy clarification distinguishes native secure storage from unencrypted web session persistence; it does not change authentication code or establish a new deployment. Material changes will be dated in this file. Questions can be sent to the project owner through [AndrewLamSingapore on GitHub](https://github.com/AndrewLamSingapore).
