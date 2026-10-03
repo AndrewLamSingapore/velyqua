@@ -1,8 +1,8 @@
-> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This document describes this repository only; it cannot override the canonical architecture or establish live deployment status.
+> Current portfolio status authority: [STATUS.md](https://github.com/AndrewLamSingapore/prime/blob/main/STATUS.md). The [operational manifest](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json) is a component and observation reference. This document cannot establish live deployment status.
 
 # VELYQUA Cross-Platform & Integration Strategy
 
-**Status:** Proposed architecture direction; subordinate to SSOT and controlled change
+**Status:** Proposed architecture direction; subordinate to STATUS.md for current status and controlled change for domain requirements
 **Date:** 26 August 2026
 
 ## Purpose
@@ -11,7 +11,7 @@ Align the future VELYQUA client, iOS/Android distribution, VELYQUA Edge, and thi
 
 ## Governing constraint
 
-This document does not override `SSOT.md`, `docs/PRODUCT_CONSTITUTION.md`, `docs/MVP_REQUIREMENTS.md`, `docs/ARCHITECTURE_DECISIONS.md`, or controlled decisions. The current locked MVP remains Singapore-first, English, iPhone-first, freshwater-only, manual-first. Sensor/controller integration remains additive read-side architecture and automatic equipment control remains excluded unless separately approved through controlled change.
+This document does not override PRIME STATUS.md, `docs/PRODUCT_CONSTITUTION.md`, `docs/MVP_REQUIREMENTS.md`, `docs/ARCHITECTURE_DECISIONS.md`, or controlled decisions. The current locked MVP remains Singapore-first, English, iPhone-first, freshwater-only, manual-first. Sensor/controller integration remains additive read-side architecture and automatic equipment control remains excluded unless separately approved through controlled change.
 
 ## Architectural principle
 
@@ -85,7 +85,7 @@ Account
       -> Outcome
 ```
 
-Raw observations must remain distinguishable from derived state and inference, consistent with the SSOT relational sensor-fusion principle.
+Raw observations must remain distinguishable from derived state and inference, consistent with the reviewed relational sensor-fusion principle.
 
 ## Flutter direction
 

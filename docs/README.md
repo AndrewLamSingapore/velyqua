@@ -1,8 +1,8 @@
-> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This document describes this repository only; it cannot override the canonical architecture or establish live deployment status.
+> Current portfolio status authority: [STATUS.md](https://github.com/AndrewLamSingapore/prime/blob/main/STATUS.md). The [operational manifest](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json) is a component and observation reference. This document cannot establish live deployment status.
 
 # VELYQUA Product Documentation
 
-This directory contains the active, reviewable product definition for VELYQUA. Repository-wide authority and precedence are defined by [`../SSOT.md`](../SSOT.md).
+This directory contains the active, reviewable product definition for VELYQUA. Portfolio status authority is [STATUS.md](https://github.com/AndrewLamSingapore/prime/blob/main/STATUS.md); VELYQUA domain requirements are in the [Product Specification](PRODUCT_SPECIFICATION.md) and controlled decisions.
 
 The 12 August 2026 VELYQUA 2.0 blueprint established the baseline. It no longer independently overrides GitHub; stable decisions and subsequent approved changes are governed here.
 
@@ -10,7 +10,7 @@ The 12 August 2026 VELYQUA 2.0 blueprint established the baseline. It no longer 
 
 | Document | Purpose |
 |---|---|
-| [SSOT](../SSOT.md) | Authority, precedence and normalization rules |
+| [Product Specification](PRODUCT_SPECIFICATION.md) | VELYQUA domain requirements and scope |
 | [Product Constitution](PRODUCT_CONSTITUTION.md) | Mission, principles and hard boundaries |
 | [Decision Log](DECISION_LOG.md) | Material controlled changes and superseded direction |
 | [MVP Requirements](MVP_REQUIREMENTS.md) | Release-blocking requirements and acceptance evidence |
@@ -26,7 +26,7 @@ The 12 August 2026 VELYQUA 2.0 blueprint established the baseline. It no longer 
 
 Documentation contains normative truth. `src/os/capabilities.ts` contains machine-readable delivery/status truth. Code/tests are implementation evidence. External PDFs, chats, investor plans and collaborator messages are inputs until promoted through controlled change.
 
-If documents conflict, follow `SSOT.md`. A Decision Log entry alone is not full normalization: every affected normative document, capability and required test must be brought into agreement.
+For current portfolio status, follow PRIME STATUS.md. For VELYQUA domain requirements, reconcile the Product Specification and controlled decisions. A Decision Log entry alone is not full normalization: every affected normative document, capability and required test must be brought into agreement.
 
 ## Change control
 
