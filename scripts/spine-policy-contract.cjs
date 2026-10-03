@@ -10,4 +10,16 @@ assert.equal(classifyAction(envelope('heater.adjust',{delta_c:1})).state, POLICY
 assert.equal(classifyAction(envelope('dosing.execute')).state, POLICY.GATED);
 assert.match(classifyAction(envelope('dosing.execute')).reason,/non-graduatable/);
 assert.equal(classifyAction(envelope('unknown.action')).state, POLICY.GATED);
-console.log('VELYQUA Stable Spine policy contract: OK');
+// An authorized alert must not be reported as executed until a durable alert
+// connector actually persists or delivers it. The handler's null-result path
+// responds AUTHORIZED_NOT_EXECUTED with pending verification.
+const { _test: { executeReflex } } = require('../api/spine.js');
+executeReflex(null, null, envelope('alert.create', { message: 'test alert' }))
+  .then((result) => {
+    assert.equal(result, null);
+    console.log('VELYQUA Stable Spine policy contract: OK');
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
