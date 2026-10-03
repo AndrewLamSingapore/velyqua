@@ -1,10 +1,10 @@
-> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This document describes this repository only; it cannot override the canonical architecture or establish live deployment status.
+> Current portfolio status authority: [STATUS.md](https://github.com/AndrewLamSingapore/prime/blob/main/STATUS.md). The [operational manifest](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json) is a component and observation reference. This document cannot establish live deployment status.
 
 # VELYQUA Architecture Decisions
 
 **Status:** Active VELYQUA 2.0 direction + 21 August 2026 inference extension
 
-This document separates current implementation from intended architecture. A target decision is not a claim that migration is complete. `SSOT.md` defines precedence; `src/os/capabilities.ts` defines current delivery status.
+This document separates current implementation from intended architecture. A target decision is not a claim that migration is complete. STATUS.md governs current status; the Product Specification and controlled decisions govern domain requirements; `src/os/capabilities.ts` defines current delivery status.
 
 ## Core architecture decisions
 
