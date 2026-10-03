@@ -128,7 +128,7 @@ async function executeReflex(db, userId, envelope) {
     });
     return { devices, healthy_count: devices.filter(device => device.healthy).length, total_count: devices.length };
   }
-  if (envelope.action === 'alert.create') return { accepted: true, alert: envelope.parameters || {} };
+  // No durable alert connector exists. Authorization alone is not execution.
   return null;
 }
 async function handleApproval(db, user, body) {
@@ -163,14 +163,15 @@ async function handleApproval(db, user, body) {
   return { status: 501, body: { approval: updated, status: 'APPROVED_WAITING_CONNECTOR', verification, error: 'No verified connector adapter is installed for this action.' } };
 }
 
-module.exports = async function handler(req, res) {
+function createHandler({ authenticateRequest = authenticate, serviceClientFactory = serviceClient } = {}) {
+  return async function handler(req, res) {
   cors(req, res);
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return json(res, 405, { error: 'Method not allowed.' }); }
   if (JSON.stringify(req.body || {}).length > 131072) return json(res, 413, { error: 'Request too large.' });
-  const user = await authenticate(req);
+  const user = await authenticateRequest(req);
   if (!user) return json(res, 401, { error: 'Valid VELYQUA session required.' });
-  const db = serviceClient();
+  const db = serviceClientFactory();
   if (!db) return json(res, 503, { error: 'Stable Spine persistence is not configured.' });
   try {
     if (String(req.query?.route || '') === 'approval') {
@@ -208,4 +209,9 @@ module.exports = async function handler(req, res) {
   } catch (error) {
     return json(res, 500, { error: 'Stable Spine action failed.', detail: String(error?.message || error).slice(0, 200) });
   }
-};
+  };
+}
+
+module.exports = createHandler();
+// Offline contract tests only; never exposed as an HTTP route.
+module.exports._test = { executeReflex, createHandler };
