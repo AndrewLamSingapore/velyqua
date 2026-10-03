@@ -128,7 +128,7 @@ async function executeReflex(db, userId, envelope) {
     });
     return { devices, healthy_count: devices.filter(device => device.healthy).length, total_count: devices.length };
   }
-  if (envelope.action === 'alert.create') return { accepted: true, alert: envelope.parameters || {} };
+  // No durable alert connector exists. Authorization alone is not execution.
   return null;
 }
 async function handleApproval(db, user, body) {
@@ -209,3 +209,6 @@ module.exports = async function handler(req, res) {
     return json(res, 500, { error: 'Stable Spine action failed.', detail: String(error?.message || error).slice(0, 200) });
   }
 };
+
+// Offline contract tests only; never exposed as an HTTP route.
+module.exports._test = { executeReflex };
