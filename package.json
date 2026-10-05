@@ -35,7 +35,7 @@
     "react-dom": "19.2.3",
     "react-native": "0.86.3",
     "react-native-url-polyfill": "^4.0.0",
-    "react-native-web": "~0.21.0"
+    "react-native-web": "~0.21.3"
   },
   "devDependencies": {
     "@types/node": "^24.13.5",
