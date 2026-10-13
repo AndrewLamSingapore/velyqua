@@ -58,7 +58,7 @@ Continuous ammonia hardware is deliberately deferred unless evidence shows it is
 
 ### Identity, privacy and ownership
 - Email/password accounts with email confirmation and password-reset requests
-- Encrypted, chunked on-device session storage with Expo SecureStore
+- Native iOS/Android sessions use encrypted, chunked Expo SecureStore; web sessions persist through unencrypted AsyncStorage-backed browser storage (see [Privacy Policy](PRIVACY.md))
 - Private cloud tank records protected by Supabase Row Level Security
 - Permanent in-app account deletion through a server-side Edge Function
 - Owner-controlled JSON export
@@ -145,7 +145,7 @@ Cloud conflict handling preserves independently added water and care logs from m
 ### Source map
 
 - `App.tsx` — session gate and digital-twin experience
-- `src/auth` — sign-in, account controls, encrypted session storage
+- `src/auth` — sign-in, account controls and platform-specific session storage (native SecureStore; web AsyncStorage)
 - `src/cloud` — Supabase client configuration
 - `src/storage` — account-scoped SQLite records, deterministic outbox and non-destructive legacy import
 - `src/sync` — upload, download, retry and deterministic merge logic
