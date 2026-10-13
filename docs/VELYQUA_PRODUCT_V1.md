@@ -1,6 +1,6 @@
 # VELYQUA product architecture v1
 
-> Portfolio authority: [one current JARVIS SSOT](https://github.com/AndrewLamSingapore/prime/blob/main/governance/operational-manifest.json). This product document cannot establish PRIME runtime or production authority.
+> Portfolio status: [STATUS.md](https://github.com/AndrewLamSingapore/orqevia/blob/main/STATUS.md) is the sole portfolio status reference. Each product owns its source, configuration, contracts and domain records. The [operational manifest](https://github.com/AndrewLamSingapore/orqevia/blob/main/governance/operational-manifest.json) provides dated ORQEVIA component and observation references; it does not establish deployment status.
 
 VELYQUA is a mobile-first household application for calm, evidence-led aquarium care. It owns aquarium observations and product state. ABEX PRIME owns shared person identity, invitations, trusted-device enrollment, authorization and production authority.
 
