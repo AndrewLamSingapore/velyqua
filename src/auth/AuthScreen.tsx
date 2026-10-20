@@ -113,12 +113,12 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cloud },
   wrap: { flex: 1, justifyContent: 'center', padding: 22 },
   intro: { marginBottom: 20 },
-  brand: { color: colors.teal, fontSize: 13, fontWeight: '900', letterSpacing: 2 },
+  brand: { color: colors.teal, fontSize: 14, fontWeight: '900', letterSpacing: 2 },
   tagline: { color: colors.muted, fontSize: 14, letterSpacing: 1, marginTop: 10 },
   hero: { color: colors.navy, fontSize: 35, lineHeight: 40, fontWeight: '900', marginTop: 10 },
   copy: { color: colors.muted, fontSize: 16, lineHeight: 23, marginTop: 10 },
   title: { color: colors.navy, fontSize: 21, fontWeight: '900', marginBottom: 5 },
   input: { borderWidth: 1, borderColor: colors.line, borderRadius: 14, minHeight: 54, padding: 14, fontSize: 16, color: colors.ink, marginTop: 12 },
-  privacy: { color: colors.muted, fontSize: 12, lineHeight: 18, textAlign: 'center', paddingHorizontal: 20 },
-  privacyLink: { color: colors.teal, fontSize: 13, fontWeight: '800', textAlign: 'center', textDecorationLine: 'underline', padding: 12 }
+  privacy: { color: colors.muted, fontSize: 14, lineHeight: 21, textAlign: 'center', paddingHorizontal: 20 },
+  privacyLink: { color: colors.teal, fontSize: 14, fontWeight: '800', textAlign: 'center', textDecorationLine: 'underline', padding: 12 }
 });
