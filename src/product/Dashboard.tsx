@@ -130,13 +130,13 @@ export function ProductDashboard({ tank, syncLabel, publicAccess, onQuickUpdate,
   return <View style={[styles.shell, desktop && styles.shellDesktop]}>
     <View style={[styles.sidebar, !desktop && styles.sidebarMobile]}>
       <View style={styles.brandBlock}><View style={styles.brandMark}><Text style={styles.brandMarkText}>V</Text></View>{desktop && <View><Text style={styles.brand}>VELYQUA</Text><Text style={styles.brandLine}>LIVING WATER</Text></View>}</View>
-      <View style={[styles.navigation, !desktop && styles.navigationMobile]}>{screens.map(item => <Pressable key={item.id} onPress={() => setScreen(item.id)} accessibilityRole="tab" accessibilityState={{ selected: screen === item.id }} style={[styles.navItem, !desktop && styles.navItemMobile, screen === item.id && styles.navActive]}><Text style={styles.navGlyph}>{item.glyph}</Text>{desktop && <Text style={[styles.navLabel, screen === item.id && styles.navLabelActive]}>{item.label}</Text>}</Pressable>)}</View>
+      <View style={[styles.navigation, !desktop && styles.navigationMobile]}>{screens.map(item => <Pressable key={item.id} onPress={() => setScreen(item.id)} accessibilityRole="tab" accessibilityLabel={item.label} accessibilityState={{ selected: screen === item.id }} style={[styles.navItem, !desktop && styles.navItemMobile, screen === item.id && styles.navActive]}><Text style={styles.navGlyph}>{item.glyph}</Text>{desktop && <Text style={[styles.navLabel, screen === item.id && styles.navLabelActive]}>{item.label}</Text>}</Pressable>)}</View>
       {desktop && <View style={styles.sidebarFoot}><View style={styles.statusDot} /><Text style={styles.sidebarStatus}>{publicAccess ? 'GUEST DEVICE' : 'PRIVATE CLOUD'}</Text></View>}
     </View>
     <View style={styles.main}>
-      <View style={styles.topbar}><View><Text style={styles.topTank}>{tank.name}</Text><Text style={styles.topStatus}>{syncLabel}</Text></View><Pressable onPress={onAccount} style={styles.avatar}><Text style={styles.avatarText}>{publicAccess ? 'G' : 'A'}</Text></Pressable></View>
+      <View style={styles.topbar}><View><Text style={styles.topTank}>{tank.name}</Text><Text style={styles.topStatus}>{syncLabel}</Text></View><Pressable onPress={onAccount} accessibilityRole="button" accessibilityLabel="Account settings" style={styles.avatar}><Text style={styles.avatarText}>{publicAccess ? 'G' : 'A'}</Text></Pressable></View>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>{content}{screen === 'home' && <CreatorConnection />}<Text style={styles.footer}>VELYQUA · Intelligence for Living Water · Evidence before intervention</Text></ScrollView>
-      <Pressable onPress={onQuickUpdate} accessibilityLabel="Add observation" style={styles.fab}><Text style={styles.fabText}>＋</Text></Pressable>
+      <Pressable onPress={onQuickUpdate} accessibilityRole="button" accessibilityLabel="Add observation" style={styles.fab}><Text style={styles.fabText}>＋</Text></Pressable>
     </View>
   </View>;
 }
