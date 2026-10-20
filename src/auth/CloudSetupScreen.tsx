@@ -21,7 +21,7 @@ export function CloudSetupScreen({ missing }: { missing: string[] }) {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cloud },
   wrap: { flex: 1, justifyContent: 'center', padding: 22 },
-  brand: { color: colors.teal, fontSize: 13, fontWeight: '900', letterSpacing: 2 },
+  brand: { color: colors.teal, fontSize: 14, fontWeight: '900', letterSpacing: 2 },
   hero: { color: colors.navy, fontSize: 34, lineHeight: 40, fontWeight: '900', marginVertical: 14 },
   title: { color: colors.navy, fontSize: 20, fontWeight: '900' },
   copy: { color: colors.muted, fontSize: 15, lineHeight: 22, marginTop: 10 },

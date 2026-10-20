@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 
 const projects: Array<[string, string, string]> = [
-  ['JARVIS PRIME', 'Try a decision walkthrough and inspect the reasoning', 'https://authority-engine-app.vercel.app/jarvis?utm_source=velyqua&utm_medium=cross_app'],
+  ['ORQEVIA · 奥启维亚', 'Try a decision walkthrough and inspect the reasoning', 'https://authority-engine-app.vercel.app/orqevia?utm_source=velyqua&utm_medium=cross_app'],
   ['Authority Engine', 'Operations, analytics and Andrew’s work', 'https://authority-engine-app.vercel.app/'],
   ['The Portal', 'Explore connections between ideas', 'https://the-portal-ten.vercel.app/'],
   ['Living Worlds', 'Make a choice in an interactive world', 'https://game-platform-wine-nine.vercel.app/'],
@@ -29,9 +29,9 @@ export function CreatorConnection() {
 }
 const s=StyleSheet.create({
  card:{marginTop:24,padding:24,borderRadius:24,backgroundColor:'#103b3d',borderWidth:1,borderColor:'#28615e'},
- kicker:{color:'#9cdacc',fontSize:10,fontWeight:'800',letterSpacing:1.3,lineHeight:16},
+ kicker:{color:'#9cdacc',fontSize:14,fontWeight:'800',letterSpacing:1.3,lineHeight:21},
  title:{color:'#f0f6ed',fontSize:29,fontWeight:'700',letterSpacing:-.7,lineHeight:34,marginTop:13,maxWidth:620},
  body:{color:'#c0d7d1',fontSize:15,lineHeight:23,marginTop:13,maxWidth:650},
- actions:{flexDirection:'row',flexWrap:'wrap',gap:10,marginTop:22},primary:{backgroundColor:'#b9e6c8',paddingHorizontal:19,paddingVertical:15,borderRadius:24},primaryText:{color:'#102f36',fontWeight:'800',fontSize:14},secondary:{paddingHorizontal:12,paddingVertical:15},secondaryText:{color:'#d6eade',fontWeight:'700',fontSize:13},
- note:{color:'#99b9b1',fontSize:11,lineHeight:17,marginTop:16},explore:{marginTop:18,paddingVertical:12,borderTopWidth:1,borderTopColor:'#ffffff25'},projects:{flexDirection:'row',flexWrap:'wrap',gap:10},project:{padding:15,borderWidth:1,borderColor:'#ffffff25',borderRadius:13,flexGrow:1,flexBasis:220},projectTitle:{color:'#f0f6ed',fontWeight:'700',fontSize:14},projectText:{color:'#abc9c0',fontSize:12,lineHeight:18,marginTop:6},error:{color:'#ffd4be',marginTop:12,fontSize:13}
+ actions:{flexDirection:'row',flexWrap:'wrap',gap:10,marginTop:22},primary:{backgroundColor:'#b9e6c8',paddingHorizontal:19,paddingVertical:15,borderRadius:24},primaryText:{color:'#102f36',fontWeight:'800',fontSize:14},secondary:{paddingHorizontal:12,paddingVertical:15},secondaryText:{color:'#d6eade',fontWeight:'700',fontSize:14},
+ note:{color:'#99b9b1',fontSize:14,lineHeight:21,marginTop:16},explore:{marginTop:18,paddingVertical:12,borderTopWidth:1,borderTopColor:'#ffffff25'},projects:{flexDirection:'row',flexWrap:'wrap',gap:10},project:{padding:15,borderWidth:1,borderColor:'#ffffff25',borderRadius:13,flexGrow:1,flexBasis:220},projectTitle:{color:'#f0f6ed',fontWeight:'700',fontSize:14},projectText:{color:'#abc9c0',fontSize:14,lineHeight:21,marginTop:6},error:{color:'#ffd4be',marginTop:12,fontSize:14}
 });

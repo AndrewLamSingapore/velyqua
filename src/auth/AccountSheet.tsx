@@ -107,9 +107,9 @@ const styles = StyleSheet.create({
   title: { color: colors.navy, fontSize: 22, fontWeight: '900' },
   close: { color: colors.muted, fontSize: 34 },
   email: { color: colors.ink, fontWeight: '700', marginTop: 4 },
-  status: { color: colors.teal, fontSize: 13, marginTop: 5 },
+  status: { color: colors.teal, fontSize: 14, marginTop: 5 },
   danger: { borderTopWidth: 1, borderTopColor: colors.line, marginTop: 20, paddingTop: 16 },
   dangerTitle: { color: colors.coral, fontSize: 16, fontWeight: '900' },
-  help: { color: colors.muted, fontSize: 13, marginTop: 5 },
+  help: { color: colors.muted, fontSize: 14, marginTop: 5 },
   input: { borderWidth: 1, borderColor: colors.line, borderRadius: 14, minHeight: 50, padding: 13, fontSize: 16, marginTop: 10 }
 });
