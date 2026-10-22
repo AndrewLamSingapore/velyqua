@@ -209,3 +209,10 @@ VELYQUA is the flagship BUILD project in [Andrew Lam's operations-intelligence p
 ## Status and evidence
 
 > Portfolio status: [STATUS.md](https://github.com/AndrewLamSingapore/orqevia/blob/main/STATUS.md) is the sole portfolio status reference. Each product owns its source, configuration, contracts and domain records. The [operational manifest](https://github.com/AndrewLamSingapore/orqevia/blob/main/governance/operational-manifest.json) provides dated ORQEVIA component and observation references; it does not establish deployment status.
+
+## Campaign visual
+
+Repository advertising creative, generated through the bounded Higgsfield
+campaign (batch 2026-10-22, zero retries, under the US$0.03 cap):
+
+![VELYQUA campaign visual](docs/ads/ad-1600x900.png)
