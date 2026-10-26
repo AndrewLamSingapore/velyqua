@@ -1,3 +1,5 @@
+[![VELYQUA — Observe subtle change. Ask better questions.](docs/repository-banner.svg)](https://velyqua.vercel.app/)
+
 <p align="center">
   <img src="assets/icon.svg" width="180" alt="VELYQUA 维澜 logo">
 </p>
@@ -16,6 +18,16 @@
 Software-first, hardware-agnostic water intelligence, beginning with aquariums. Manual tests, sensors, APIs and human observations feed a common observation model. The ESP32 is an R&D reference node, not a required proprietary device.
 
 [**Open VELYQUA ↗**](https://velyqua.vercel.app/) · [**Discuss this project**](https://authority-engine-app.vercel.app/contact?source=velyqua) · [**Meet Andrew Lam**](https://authority-engine-app.vercel.app/about)
+
+## Start here
+
+| You want to… | Go to |
+| --- | --- |
+| Explore the prototype | [Public web app](https://velyqua.vercel.app/) and [what works now](#what-works-now) |
+| Run the source | [Simple setup](SETUP_SIMPLE.md) and [capability map](VELYQUA_OS.md) |
+| Check the boundaries | [Reconstruction provenance](RECONSTRUCTION_NOTICE.md), [privacy](PRIVACY.md) and [contributing](CONTRIBUTING.md) |
+
+[Browse all six projects and their source](https://github.com/AndrewLamSingapore/AndrewLamSingapore#selected-work) · [About Andrew](https://authority-engine-app.vercel.app/about)
 
 ## Connected work
 
