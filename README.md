@@ -27,6 +27,8 @@ Software-first, hardware-agnostic water intelligence, beginning with aquariums. 
 | Run the source | [Simple setup](SETUP_SIMPLE.md) and [capability map](VELYQUA_OS.md) |
 | Check the boundaries | [Reconstruction provenance](RECONSTRUCTION_NOTICE.md), [privacy](PRIVACY.md) and [contributing](CONTRIBUTING.md) |
 
+[Report a bug](https://github.com/AndrewLamSingapore/velyqua/issues) · [Ask a question](https://github.com/AndrewLamSingapore/velyqua/discussions) · [Wiki](https://github.com/AndrewLamSingapore/velyqua/wiki)
+
 [Browse all six projects and their source](https://github.com/AndrewLamSingapore/AndrewLamSingapore#selected-work) · [About Andrew](https://authority-engine-app.vercel.app/about)
 
 ## Connected work
