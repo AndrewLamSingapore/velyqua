@@ -19,6 +19,18 @@ Software-first, hardware-agnostic water intelligence, beginning with aquariums. 
 
 [**Open VELYQUA ↗**](https://velyqua.vercel.app/) · [**Discuss this project**](https://authority-engine-app.vercel.app/contact?source=velyqua) · [**Meet Andrew Lam**](https://authority-engine-app.vercel.app/about)
 
+## Animal–environment intelligence · research direction
+
+**Observe subtle change. Understand the environment. Support better care decisions.**
+
+VELYQUA's long-term research thesis is to connect an animal's changing environment, observed biological/behavioural signals, keeper interventions and subsequent outcomes — not merely display sensor readings. The existing manual-first app records aquarium context, observations and care history; synchronized camera-based behaviour analysis, individual identification and welfare-outcome inference are **proposed experiments, not shipped or validated features**.
+
+A candidate pilot would compare timestamped group-level fish-zone observations with water measurements and keeper records, explicitly flagging blocked video, stale sensors and confounding care events. Simulated classroom charts are illustrative, not real tank evidence or proof of improved welfare. Human keepers retain responsibility for investigation and care; automatic equipment control and disease diagnosis remain outside current scope.
+
+[Read the evidence-gated research direction](docs/ANIMAL_ENVIRONMENT_INTELLIGENCE.md) · [Prototype V0 strategy](docs/PROTOTYPE_V0_EXPERIMENTAL_STRATEGY.md) · [Architecture decisions](docs/ARCHITECTURE_DECISIONS.md)
+
+---
+
 ## Start here
 
 | You want to… | Go to |
