@@ -53,7 +53,7 @@ function Home({ tank, onQuickUpdate }: { tank: Tank; onQuickUpdate: () => void }
   const state = tank.readings.length ? recommendation.state : 'more_information_needed';
   return <>
     <View style={styles.heroRow}>
-      <View style={styles.heroCopy}><Text style={styles.kicker}>FOUNDING TANK</Text><Text style={styles.hero}>Understand your water. Care with clarity.</Text><Text style={styles.subhero}>A clearer picture of your aquarium, one observation at a time. Explore the app, add a water test, and help shape what comes next.</Text></View>
+      <View style={styles.heroCopy}><Text style={styles.kicker}>FOUNDING TANK</Text><Text style={styles.hero}>Understand your water. Care with clarity.</Text><Text style={styles.subhero}>Record what changes in your aquarium and make more informed care decisions. Today: water tests, observations and care history. Future research: linking animal behaviour, environment and intervention outcomes; camera analysis is not yet available.</Text></View>
       <View style={styles.heroOrb}><Text style={styles.heroOrbWater}>≈</Text><Text style={styles.heroOrbText}>{state === 'all_clear' ? 'CALM' : 'LEARNING'}</Text></View>
     </View>
     <Panel tone="dark">
