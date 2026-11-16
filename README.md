@@ -19,6 +19,26 @@ Software-first, hardware-agnostic water intelligence, beginning with aquariums. 
 
 [**Open VELYQUA ↗**](https://velyqua.vercel.app/) · [**Discuss this project**](https://authority-engine-app.vercel.app/contact?source=velyqua) · [**Meet Andrew Lam**](https://authority-engine-app.vercel.app/about)
 
+## Explore the public experience
+
+**[Launch the VELYQUA web app →](https://velyqua.vercel.app/)**
+
+The responsive public web experience includes a **four-stage, interactive aquarium-care walkthrough** for guest visitors:
+
+**Observe → Compare → Respond → Learn**
+
+Visitors can move through a fictional keeper scenario, examine illustrative dissolved-oxygen and fish-zone observations, and consider how a human-led care decision should be documented and followed up. The walkthrough works on mobile browsers and is deliberately separate from the visitor's actual aquarium records.
+
+**Important evidence boundary:** The example values (including 7.2 mg/L dissolved oxygen and 9% surface occupancy) are **synthetic educational figures**, not live readings, species-specific safety thresholds, diagnoses, or proof of improved animal welfare. The walkthrough does **not** operate sensors, activate cameras, infer individual-animal health, or control aquarium equipment.
+
+**Currently available:** aquarium records, manual water tests, observations and care history. **Research direction, not shipped:** camera-derived behaviour, individual-animal intelligence and intervention-outcome inference. See the [animal–environment research protocol](docs/ANIMAL_ENVIRONMENT_INTELLIGENCE.md).
+
+**Public access:** The app displays a guest mode whose records are saved on the current device. Signed-in users can use the documented private account and synchronization workflows. Do not confuse guest-device storage with cloud-backed accounts.
+
+[Try the interactive walkthrough](https://velyqua.vercel.app/) · [Read the source implementation](src/product/PublicProofExperience.tsx) · [Report feedback](https://github.com/AndrewLamSingapore/velyqua/issues)
+
+---
+
 ## Animal–environment intelligence · research direction
 
 **Observe subtle change. Understand the environment. Support better care decisions.**
@@ -35,7 +55,7 @@ A candidate pilot would compare timestamped group-level fish-zone observations w
 
 | You want to… | Go to |
 | --- | --- |
-| Explore the prototype | [Public web app](https://velyqua.vercel.app/) and [what works now](#what-works-now) |
+| Explore the prototype | [Interactive public walkthrough](#explore-the-public-experience), [public web app](https://velyqua.vercel.app/) and [what works now](#what-works-now) |
 | Run the source | [Simple setup](SETUP_SIMPLE.md) and [capability map](VELYQUA_OS.md) |
 | Check the boundaries | [Reconstruction provenance](RECONSTRUCTION_NOTICE.md), [privacy](PRIVACY.md) and [contributing](CONTRIBUTING.md) |
 
