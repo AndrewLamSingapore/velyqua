@@ -10,7 +10,7 @@ const steps = [
 
 export function PublicProofExperience() {
   const [step, setStep] = useState(0);
-  const current = steps[step];
+  const current = steps[step] ?? steps[0]!;
   return <View style={styles.shell}>
     <View style={styles.heading}>
       <View style={styles.headingCopy}>
