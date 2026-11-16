@@ -3,6 +3,7 @@ import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } fr
 import { evaluateTank } from '../domain/decisionEngine';
 import { Tank } from '../domain/types';
 import { CreatorConnection } from './CreatorConnection';
+import { PublicProofExperience } from './PublicProofExperience';
 
 type Screen = 'home' | 'live' | 'history' | 'alerts' | 'people' | 'system';
 
@@ -47,7 +48,7 @@ function Empty({ title, body }: { title: string; body: string }) {
   return <View style={styles.empty}><Text style={styles.emptyGlyph}>○</Text><Text style={styles.emptyTitle}>{title}</Text><Text style={styles.emptyBody}>{body}</Text></View>;
 }
 
-function Home({ tank, onQuickUpdate }: { tank: Tank; onQuickUpdate: () => void }) {
+function Home({ tank, onQuickUpdate, publicAccess }: { tank: Tank; onQuickUpdate: () => void; publicAccess: boolean }) {
   const recommendation = useMemo(() => evaluateTank(tank), [tank]);
   const latest = [...tank.readings].sort((a, b) => Date.parse(b.observedAt) - Date.parse(a.observedAt))[0];
   const state = tank.readings.length ? recommendation.state : 'more_information_needed';
@@ -62,6 +63,7 @@ function Home({ tank, onQuickUpdate }: { tank: Tank; onQuickUpdate: () => void }
       <Text style={styles.darkAction}>{tank.readings.length ? recommendation.action : 'Connect a physical sensor or add a manual water test.'}</Text>
       <Pressable style={styles.lightButton} onPress={onQuickUpdate}><Text style={styles.lightButtonText}>Add a real observation</Text></Pressable>
     </Panel>
+    {publicAccess && <PublicProofExperience />}
     <Text style={styles.sectionTitle}>At a glance</Text>
     <View style={styles.metricGrid}>
       <Metric label="WATER" value={latest ? `${latest.value} ${latest.unit}` : '—'} note={latest ? `${latest.parameter} · ${ageLabel(latest.observedAt)}` : 'No physical readings'} muted={!latest} />
@@ -126,7 +128,7 @@ export function ProductDashboard({ tank, syncLabel, publicAccess, onQuickUpdate,
   const [screen, setScreen] = useState<Screen>('home');
   const { width } = useWindowDimensions();
   const desktop = width >= 880;
-  const content = screen === 'home' ? <Home tank={tank} onQuickUpdate={onQuickUpdate} /> : screen === 'live' ? <Live tank={tank} /> : screen === 'history' ? <History tank={tank} /> : screen === 'alerts' ? <Alerts /> : screen === 'people' ? <People /> : <System syncLabel={syncLabel} />;
+  const content = screen === 'home' ? <Home tank={tank} onQuickUpdate={onQuickUpdate} publicAccess={publicAccess} /> : screen === 'live' ? <Live tank={tank} /> : screen === 'history' ? <History tank={tank} /> : screen === 'alerts' ? <Alerts /> : screen === 'people' ? <People /> : <System syncLabel={syncLabel} />;
   return <View style={[styles.shell, desktop && styles.shellDesktop]}>
     <View style={[styles.sidebar, !desktop && styles.sidebarMobile]}>
       <View style={styles.brandBlock}><View style={styles.brandMark}><Text style={styles.brandMarkText}>V</Text></View>{desktop && <View><Text style={styles.brand}>VELYQUA</Text><Text style={styles.brandLine}>LIVING WATER</Text></View>}</View>
