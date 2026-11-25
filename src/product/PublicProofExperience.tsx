@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { SITE_URLS } from '../brand/urls';
 
 const steps = [
   { label: '1 · Observe', title: 'Start with an observation', detail: 'A keeper notices fish spending more time near the surface. One observation alone does not establish a cause.', water: '7.2 mg/L', behaviour: '9% surface occupancy', action: 'Record a dated observation and check the context.' },
@@ -35,7 +36,7 @@ export function PublicProofExperience() {
         <Pressable accessibilityRole="button" onPress={() => setStep(value => value === steps.length - 1 ? 0 : value + 1)} style={styles.next}><Text style={styles.nextText}>{step === steps.length - 1 ? 'Replay journey ↺' : 'Continue →'}</Text></Pressable>
       </View>
     </View>
-    <View style={styles.boundary}><Text style={styles.boundaryTitle}>What is available today?</Text><Text style={styles.boundaryBody}>VELYQUA supports aquarium records, manual water tests, observations and care history. Camera-based behaviour analysis, individual-animal inference and automated intervention are not shipped capabilities. This walkthrough is educational and never writes fictional values into your aquarium records.</Text><Pressable accessibilityRole="link" onPress={() => Linking.openURL('https://github.com/AndrewLamSingapore/velyqua/blob/main/docs/ANIMAL_ENVIRONMENT_INTELLIGENCE.md')}><Text style={styles.link}>Explore the evidence-gated research roadmap ↗</Text></Pressable><Pressable accessibilityRole="link" onPress={() => Linking.openURL('https://velyqua-website.vercel.app/')}><Text style={styles.link}>VELYQUA home ↗</Text></Pressable></View>
+    <View style={styles.boundary}><Text style={styles.boundaryTitle}>What is available today?</Text><Text style={styles.boundaryBody}>VELYQUA supports aquarium records, manual water tests, observations and care history. Camera-based behaviour analysis, individual-animal inference and automated intervention are not shipped capabilities. This walkthrough is educational and never writes fictional values into your aquarium records.</Text><Pressable accessibilityRole="link" onPress={() => Linking.openURL('https://github.com/AndrewLamSingapore/velyqua/blob/main/docs/ANIMAL_ENVIRONMENT_INTELLIGENCE.md')}><Text style={styles.link}>Explore the evidence-gated research roadmap ↗</Text></Pressable><Pressable accessibilityRole="link" onPress={() => Linking.openURL(SITE_URLS.marketing)}><Text style={styles.link}>VELYQUA home ↗</Text></Pressable></View>
   </View>;
 }
 const ink = '#102f36';
