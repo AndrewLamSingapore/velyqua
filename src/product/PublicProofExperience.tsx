@@ -13,6 +13,10 @@ export function PublicProofExperience() {
   const [step, setStep] = useState(0);
   const current = steps[step] ?? steps[0]!;
   return <View style={styles.shell}>
+    <View style={styles.brandBar}>
+      <Text style={styles.brandName}>VELYQUA 维澜</Text>
+      <Pressable accessibilityRole="link" onPress={() => Linking.openURL(SITE_URLS.marketing)}><Text style={styles.brandLink}>Home ↗</Text></Pressable>
+    </View>
     <View style={styles.heading}>
       <View style={styles.headingCopy}>
         <Text style={styles.eyebrow}>EXPLORE THE IDEA · INTERACTIVE WALKTHROUGH</Text>
@@ -39,40 +43,47 @@ export function PublicProofExperience() {
     <View style={styles.boundary}><Text style={styles.boundaryTitle}>What is available today?</Text><Text style={styles.boundaryBody}>VELYQUA supports aquarium records, manual water tests, observations and care history. Camera-based behaviour analysis, individual-animal inference and automated intervention are not shipped capabilities. This walkthrough is educational and never writes fictional values into your aquarium records.</Text><Pressable accessibilityRole="link" onPress={() => Linking.openURL('https://github.com/AndrewLamSingapore/velyqua/blob/main/docs/ANIMAL_ENVIRONMENT_INTELLIGENCE.md')}><Text style={styles.link}>Explore the evidence-gated research roadmap ↗</Text></Pressable><Pressable accessibilityRole="link" onPress={() => Linking.openURL(SITE_URLS.marketing)}><Text style={styles.link}>VELYQUA home ↗</Text></Pressable></View>
   </View>;
 }
-const ink = '#102f36';
+
+// Canonical VELYQUA brand tokens (shared with the marketing site):
+// abyss #010A11, deep #041523, navy #062A4E, midnight #0B2748, teal #007F86,
+// cyan #00BFC7, cyan-glow #4AF0E3, cyan-soft #8FE8E1, foam #F5FFFF,
+// ink #EAF4F6, muted #7A96A8, line #12314B, amber #D79A24.
 const styles = StyleSheet.create({
-  shell: { backgroundColor: '#eaf5f1', borderRadius: 22, padding: 22, marginTop: 26, marginBottom: 12, borderWidth: 1, borderColor: '#cce5dc' },
+  shell: { backgroundColor: '#041523', borderRadius: 22, padding: 22, marginTop: 26, marginBottom: 12, borderWidth: 1, borderColor: '#12314B' },
+  brandBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 },
+  brandName: { color: '#F5FFFF', fontSize: 15, fontWeight: '900', letterSpacing: 2 },
+  brandLink: { color: '#4AF0E3', fontSize: 13, fontWeight: '800' },
   heading: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 },
   headingCopy: { flex: 1, minWidth: 210 },
-  eyebrow: { color: '#16766b', fontSize: 14, fontWeight: '900', letterSpacing: 1.5 },
-  title: { color: ink, fontSize: 25, fontWeight: '900', lineHeight: 31, marginTop: 8 },
-  body: { color: '#476569', fontSize: 14, lineHeight: 21, marginTop: 8 },
-  badge: { backgroundColor: '#fff3d7', paddingHorizontal: 10, paddingVertical: 7, borderRadius: 20 },
-  badgeText: { color: '#79530c', fontSize: 14, fontWeight: '900', letterSpacing: .5 },
+  eyebrow: { color: '#4AF0E3', fontSize: 14, fontWeight: '900', letterSpacing: 1.5 },
+  title: { color: '#F5FFFF', fontSize: 25, fontWeight: '900', lineHeight: 31, marginTop: 8 },
+  body: { color: '#7A96A8', fontSize: 14, lineHeight: 21, marginTop: 8 },
+  badge: { backgroundColor: '#12314B', paddingHorizontal: 10, paddingVertical: 7, borderRadius: 20 },
+  badgeText: { color: '#D79A24', fontSize: 14, fontWeight: '900', letterSpacing: .5 },
   steps: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, marginTop: 20, marginBottom: 14 },
-  step: { paddingVertical: 10, paddingHorizontal: 12, borderRadius: 11, backgroundColor: '#d9eae5' },
-  stepActive: { backgroundColor: ink },
-  stepText: { color: '#426a68', fontWeight: '800', fontSize: 14 },
-  stepTextActive: { color: '#fff' },
-  scene: { backgroundColor: '#fff', borderRadius: 17, padding: 20 },
-  sceneLabel: { color: '#16766b', fontSize: 14, fontWeight: '900', letterSpacing: 1.3 },
-  sceneTitle: { color: ink, fontSize: 21, fontWeight: '900', marginTop: 8 },
-  sceneBody: { color: '#536d70', fontSize: 14, lineHeight: 21, marginTop: 9 },
+  step: { paddingVertical: 10, paddingHorizontal: 12, borderRadius: 11, backgroundColor: '#0B2748' },
+  stepActive: { backgroundColor: '#4AF0E3' },
+  stepText: { color: '#8FE8E1', fontWeight: '800', fontSize: 14 },
+  stepTextActive: { color: '#010A11' },
+  scene: { backgroundColor: '#061B2D', borderRadius: 17, padding: 20, borderWidth: 1, borderColor: '#12314B' },
+  sceneLabel: { color: '#4AF0E3', fontSize: 14, fontWeight: '900', letterSpacing: 1.3 },
+  sceneTitle: { color: '#F5FFFF', fontSize: 21, fontWeight: '900', marginTop: 8 },
+  sceneBody: { color: '#7A96A8', fontSize: 14, lineHeight: 21, marginTop: 9 },
   metrics: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 18 },
-  metric: { flex: 1, minWidth: 170, backgroundColor: '#f0f7f4', borderRadius: 12, padding: 14 },
-  metricLabel: { color: '#567471', fontSize: 14, fontWeight: '900', letterSpacing: .7 },
-  metricValue: { color: ink, fontSize: 19, fontWeight: '900', marginTop: 8 },
-  action: { backgroundColor: '#e7f1ee', padding: 14, borderRadius: 12, marginTop: 12 },
-  actionLabel: { color: '#14766c', fontSize: 14, fontWeight: '900', letterSpacing: 1 },
-  actionText: { color: ink, fontSize: 14, fontWeight: '700', lineHeight: 21, marginTop: 5 },
+  metric: { flex: 1, minWidth: 170, backgroundColor: '#062A4E', borderRadius: 12, padding: 14, borderWidth: 1, borderColor: '#12314B' },
+  metricLabel: { color: '#8FE8E1', fontSize: 14, fontWeight: '900', letterSpacing: .7 },
+  metricValue: { color: '#F5FFFF', fontSize: 19, fontWeight: '900', marginTop: 8 },
+  action: { backgroundColor: '#062A4E', padding: 14, borderRadius: 12, marginTop: 12 },
+  actionLabel: { color: '#4AF0E3', fontSize: 14, fontWeight: '900', letterSpacing: 1 },
+  actionText: { color: '#EAF4F6', fontSize: 14, fontWeight: '700', lineHeight: 21, marginTop: 5 },
   controls: { flexDirection: 'row', justifyContent: 'space-between', gap: 10, marginTop: 18 },
-  button: { paddingHorizontal: 16, paddingVertical: 12, borderRadius: 10, backgroundColor: '#e7efec' },
+  button: { paddingHorizontal: 16, paddingVertical: 12, borderRadius: 10, backgroundColor: '#0B2748' },
   disabled: { opacity: .45 },
-  buttonText: { color: ink, fontWeight: '800' },
-  next: { backgroundColor: '#147c78', paddingHorizontal: 18, paddingVertical: 12, borderRadius: 10 },
-  nextText: { color: 'white', fontWeight: '900' },
+  buttonText: { color: '#F5FFFF', fontWeight: '800' },
+  next: { backgroundColor: '#4AF0E3', paddingHorizontal: 18, paddingVertical: 12, borderRadius: 10 },
+  nextText: { color: '#010A11', fontWeight: '900' },
   boundary: { paddingTop: 17 },
-  boundaryTitle: { color: ink, fontSize: 15, fontWeight: '900' },
-  boundaryBody: { color: '#526e70', fontSize: 14, lineHeight: 20, marginTop: 6 },
-  link: { color: '#126d68', fontSize: 14, fontWeight: '900', marginTop: 12 }
+  boundaryTitle: { color: '#F5FFFF', fontSize: 15, fontWeight: '900' },
+  boundaryBody: { color: '#7A96A8', fontSize: 14, lineHeight: 20, marginTop: 6 },
+  link: { color: '#4AF0E3', fontSize: 14, fontWeight: '900', marginTop: 12 }
 });
