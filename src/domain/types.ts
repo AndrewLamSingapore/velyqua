@@ -44,6 +44,7 @@ export type Activity = {
     | 'plant_care'
     | 'livestock_observation'
     | 'livestock_loss'
+    | 'body_condition'
     | 'uncertain_nitrite'
     | 'breeding_observation'
     | 'equipment_service'
@@ -51,6 +52,7 @@ export type Activity = {
   occurredAt: string;
   note?: string;
   percentage?: number;
+  bodyCondition?: { subject: string; status: 'stable' | 'improving' | 'worsening'; date: string };
   relatedRecordId?: string;
   updatedAt?: string;
 };
@@ -166,6 +168,7 @@ export type Recommendation = {
   estimatedMinutes: number;
   evidence: string[];
   showLossHistory?: boolean;
+  showConditionHistory?: boolean;
   nitriteRetest?: string;
 };
 
