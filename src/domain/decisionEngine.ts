@@ -10,6 +10,25 @@ const ageHours = (iso: string) => (Date.now() - Date.parse(iso)) / 3_600_000;
 const result = (state: AquaState, values: Omit<Recommendation, 'state'>): Recommendation => ({ state, ...values });
 
 export function evaluateTank(tank: Tank): Recommendation {
+  const assessment = evaluateConfirmedEvidence(tank);
+  const confirmed = latest(tank, 'nitrite');
+  const pending = tank.activities.some(activity => activity.type === 'uncertain_nitrite' &&
+    Date.parse(activity.occurredAt) > (confirmed ? Date.parse(confirmed.observedAt) : -Infinity));
+  if (!pending) return assessment;
+  const nitriteRetest = confirmed
+    ? `Last confirmed nitrite: ${confirmed.value} ${confirmed.unit} · ${new Date(confirmed.observedAt).toLocaleString()}`
+    : 'No confirmed nitrite reading yet.';
+  if (assessment.state === 'needs_attention') {
+    return { ...assessment, action: assessment.action + ' Retest needed for nitrite.', nitriteRetest };
+  }
+  return result('more_information_needed', {
+    title: 'Retest needed', reason: 'The latest nitrite test was recorded as uncertain.',
+    action: 'Repeat the nitrite test and record the confirmed result.',
+    confidence: 'limited', estimatedMinutes: 5, evidence: ['Keeper-recorded uncertain nitrite test'], nitriteRetest
+  });
+}
+
+function evaluateConfirmedEvidence(tank: Tank): Recommendation {
   const ammonia = latest(tank, 'ammonia');
   const nitrite = latest(tank, 'nitrite');
   const nitrate = latest(tank, 'nitrate');

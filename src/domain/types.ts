@@ -44,6 +44,7 @@ export type Activity = {
     | 'plant_care'
     | 'livestock_observation'
     | 'livestock_loss'
+    | 'uncertain_nitrite'
     | 'breeding_observation'
     | 'equipment_service'
     | 'treatment';
@@ -165,6 +166,7 @@ export type Recommendation = {
   estimatedMinutes: number;
   evidence: string[];
   showLossHistory?: boolean;
+  nitriteRetest?: string;
 };
 
 export type WaterChangePreview = {
