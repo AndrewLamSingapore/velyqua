@@ -43,6 +43,7 @@ export type Activity = {
     | 'cleaning'
     | 'plant_care'
     | 'livestock_observation'
+    | 'livestock_loss'
     | 'breeding_observation'
     | 'equipment_service'
     | 'treatment';
@@ -163,6 +164,7 @@ export type Recommendation = {
   confidence: 'strong' | 'partial' | 'limited';
   estimatedMinutes: number;
   evidence: string[];
+  showLossHistory?: boolean;
 };
 
 export type WaterChangePreview = {

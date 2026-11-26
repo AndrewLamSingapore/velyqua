@@ -49,18 +49,20 @@ function Empty({ title, body }: { title: string; body: string }) {
   return <View style={styles.empty}><Text style={styles.emptyGlyph}>○</Text><Text style={styles.emptyTitle}>{title}</Text><Text style={styles.emptyBody}>{body}</Text></View>;
 }
 
-function Home({ tank, onQuickUpdate, publicAccess }: { tank: Tank; onQuickUpdate: () => void; publicAccess: boolean }) {
+function Home({ tank, onQuickUpdate, publicAccess, onHistory }: { onHistory: () => void; tank: Tank; onQuickUpdate: () => void; publicAccess: boolean }) {
   const recommendation = useMemo(() => evaluateTank(tank), [tank]);
   const latest = [...tank.readings].sort((a, b) => Date.parse(b.observedAt) - Date.parse(a.observedAt))[0];
-  const state = tank.readings.length ? recommendation.state : 'more_information_needed';
+  const state = recommendation.state;
+  const showRecommendation = tank.readings.length > 0 || recommendation.showLossHistory;
   return <>
     <View style={styles.heroRow}>
       <View style={styles.heroCopy}><Text style={styles.kicker}>INTELLIGENCE FOR LIVING WATER</Text><Text accessibilityRole="header" style={styles.hero}>Understand your water. Remember every change.</Text><Text style={styles.subhero}>Water tests, keeper observations and care history in one place. Start with what you can observe, then follow what changes over time.</Text></View>
     </View>
     <Panel tone="dark">
-      <View style={styles.between}><View style={styles.grow}><Text style={styles.darkKicker}>RIGHT NOW</Text><Text style={styles.darkTitle}>{tank.readings.length ? recommendation.title : 'Start with a water test or observation'}</Text><Text style={styles.darkBody}>{tank.readings.length ? recommendation.reason : 'Record a manual test, note what you see and build a useful history. Missing measurements remain visible.'}</Text></View><Pill tone={state === 'all_clear' ? 'good' : 'warn'}>{state === 'all_clear' ? 'ALL CLEAR' : state === 'needs_attention' ? 'NEEDS ATTENTION' : 'MORE INFORMATION'}</Pill></View>
+      <View style={styles.between}><View style={styles.grow}><Text style={styles.darkKicker}>RIGHT NOW</Text><Text style={styles.darkTitle}>{showRecommendation ? recommendation.title : 'Start with a water test or observation'}</Text><Text style={styles.darkBody}>{showRecommendation ? recommendation.reason : 'Record a manual test, note what you see and build a useful history. Missing measurements remain visible.'}</Text></View><Pill tone={state === 'all_clear' ? 'good' : 'warn'}>{state === 'all_clear' ? 'ALL CLEAR' : state === 'needs_attention' ? 'NEEDS ATTENTION' : 'MORE INFORMATION'}</Pill></View>
       <View style={styles.dividerDark} />
-      <Text style={styles.darkAction}>{tank.readings.length ? recommendation.action : 'Add a manual water test or record a care action.'}</Text>
+      <Text style={styles.darkAction}>{showRecommendation ? recommendation.action : 'Add a manual water test or record a care action.'}</Text>
+      {recommendation.showLossHistory && <Pressable accessibilityRole="button" onPress={onHistory} style={styles.lightButton}><Text style={styles.lightButtonText}>View loss history</Text></Pressable>}
       <Pressable accessibilityRole="button" style={styles.lightButton} onPress={onQuickUpdate}><Text style={styles.lightButtonText}>Record an observation</Text></Pressable>
     </Panel>
     {publicAccess && <PublicProofExperience />}
@@ -100,7 +102,7 @@ function History({ tank }: { tank: Tank }) {
   return <><Text style={styles.kicker}>HISTORY</Text><Text accessibilityRole="header" style={styles.hero}>A record you can trust.</Text><Text style={styles.subhero}>Only owner observations and admitted physical telemetry belong here.</Text>
     <Text style={styles.panelBody}>All recorded water tests, newest first.</Text>
     {readings.length === 0 ? <Empty title="No water history yet" body="Connect a physical sensor or record a manual test. VELYQUA will never fill this chart with made-up readings." /> : readings.map(item => <Panel key={item.id}><View style={styles.between}><View><Text style={styles.panelTitle}>{item.parameter.replaceAll('_', ' ')}</Text><Text style={styles.panelBody}>{new Date(item.observedAt).toLocaleString()} · {item.method}</Text></View><Text style={styles.historyValue}>{item.value} {item.unit}</Text></View></Panel>)}
-    <Text style={styles.sectionTitle}>Care timeline</Text>{tank.activities.slice(0, 8).map(item => <View key={item.id} style={styles.timeline}><View style={styles.timelineDot} /><View style={styles.grow}><Text style={styles.timelineTitle}>{item.type.replaceAll('_', ' ')}</Text><Text style={styles.timelineBody}>{item.note ?? 'No note'} · {new Date(item.occurredAt).toLocaleDateString()}</Text></View></View>)}
+    <Text style={styles.sectionTitle}>Care timeline</Text>{[...tank.activities].sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt)).map(item => <View key={item.id} style={styles.timeline}><View style={styles.timelineDot} /><View style={styles.grow}><Text style={styles.timelineTitle}>{item.type.replaceAll('_', ' ')}</Text><Text style={styles.timelineBody}>{item.note ?? 'No note'} · {new Date(item.occurredAt).toLocaleDateString()}</Text></View></View>)}
   </>;
 }
 
@@ -128,7 +130,7 @@ export function ProductDashboard({ tank, syncLabel, publicAccess, onQuickUpdate,
   const [screen, setScreen] = useState<Screen>('home');
   const { width } = useWindowDimensions();
   const desktop = width >= 880;
-  const content = screen === 'home' ? <Home tank={tank} onQuickUpdate={onQuickUpdate} publicAccess={publicAccess} /> : screen === 'live' ? <Live tank={tank} /> : screen === 'history' ? <History tank={tank} /> : screen === 'alerts' ? <Alerts /> : screen === 'people' ? <People /> : <System syncLabel={syncLabel} />;
+  const content = screen === 'home' ? <Home onHistory={() => setScreen('history')} tank={tank} onQuickUpdate={onQuickUpdate} publicAccess={publicAccess} /> : screen === 'live' ? <Live tank={tank} /> : screen === 'history' ? <History tank={tank} /> : screen === 'alerts' ? <Alerts /> : screen === 'people' ? <People /> : <System syncLabel={syncLabel} />;
   return <View style={[styles.shell, desktop && styles.shellDesktop]}>
     <View style={[styles.sidebar, !desktop && styles.sidebarMobile]}>
       <View style={styles.brandBlock}><View style={styles.brandMark}><Text style={styles.brandMarkText}>V</Text></View>{desktop && <View><Text style={styles.brand}>VELYQUA</Text><Text style={styles.brandLine}>LIVING WATER</Text></View>}</View>
