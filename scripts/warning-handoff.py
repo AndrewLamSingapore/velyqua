@@ -208,6 +208,31 @@ def verify_ammonia_retest(browser, url):
     context.close()
 
 
+def verify_nitrate_comparison(browser, url):
+    context = browser.new_context()
+    page = context.new_page()
+    page.goto(url)
+    for source, value in [("Tap water", "30"), ("Tank", "10")]:
+        page.get_by_role("button", name="Record an observation").click()
+        page.get_by_role("radio", name=source, exact=True).click()
+        page.get_by_text("nitrate", exact=True).last.click()
+        page.get_by_label("Water test value").fill(value)
+        page.get_by_text("Save update", exact=True).click()
+        expect(page.get_by_text("Quick Update", exact=True)).to_be_hidden()
+        page.get_by_role("tab", name="History").click()
+        if source == "Tap water":
+            expect(page.get_by_text("Record a tank nitrate test.", exact=True)).to_be_visible()
+            page.get_by_role("tab", name="Home").click()
+    message = "Tank nitrate measured 20 mg/L lower than tap water."
+    expect(page.get_by_text(message, exact=True)).to_be_visible()
+    page.close()
+    page = context.new_page()
+    page.goto(url)
+    page.get_by_role("tab", name="History").click()
+    expect(page.get_by_text(message, exact=True)).to_be_visible()
+    context.close()
+
+
 if __name__ == "__main__":
     with sync_playwright() as playwright:
         with playwright.chromium.launch() as browser:
@@ -216,3 +241,4 @@ if __name__ == "__main__":
             verify_sample_source(browser, sys.argv[1])
             verify_breathing(browser, sys.argv[1])
             verify_ammonia_retest(browser, sys.argv[1])
+            verify_nitrate_comparison(browser, sys.argv[1])

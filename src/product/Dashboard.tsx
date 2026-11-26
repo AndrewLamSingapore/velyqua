@@ -1,4 +1,5 @@
 import { sampleSourceLabel } from '../domain/types';
+import { nitrateComparison } from '../domain/nitrateComparison';
 import React, { useMemo, useState } from 'react';
 import { Linking, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { activeBreathingReports, evaluateTank } from '../domain/decisionEngine';
@@ -104,6 +105,7 @@ function Live({ tank }: { tank: Tank }) {
 type ResolveMissing = (id: string, outcome: 'fish_found' | 'livestock_loss' | 'breathing_resolved') => Promise<void>;
 
 function History({ tank, onResolveMissing }: { tank: Tank; onResolveMissing: ResolveMissing }) {
+  const comparison = nitrateComparison(tank.readings);
   const [error, setError] = useState('');
   const resolved = new Set(tank.activities.filter(item => item.type === 'fish_found' || item.type === 'livestock_loss').map(item => item.relatedRecordId));
   const openCases = tank.activities.filter(item => item.type === 'fish_missing' && !resolved.has(item.id));
@@ -129,6 +131,22 @@ function History({ tank, onResolveMissing }: { tank: Tank; onResolveMissing: Res
       })}
     </Panel>)}
     {error ? <Text>{error}</Text> : null}
+    <Panel>
+      <Text style={styles.panelTitle}>Tank and tap nitrate</Text>
+      <View style={styles.between}>
+        {(['tank', 'tap'] as const).map(source => {
+          const sample = comparison.samples[source];
+          return <View key={source} style={styles.grow}>
+            <Text style={styles.panelTitle}>{sampleSourceLabel(source)}</Text>
+            {sample ? <>
+              <Text style={styles.historyValue}>{sample.value} {sample.unit}</Text>
+              <Text style={styles.panelBody}>{new Date(sample.observedAt).toLocaleString()}</Text>
+            </> : <Text style={styles.panelBody}>Record a {source} nitrate test.</Text>}
+          </View>;
+        })}
+      </View>
+      {comparison.summary ? <Text style={styles.panelBody}>{comparison.summary}</Text> : null}
+    </Panel>
     <Text style={styles.panelBody}>All recorded water tests, newest first.</Text>
     {readings.length === 0 ? <Empty title="No water history yet" body="Connect a physical sensor or record a manual test. VELYQUA will never fill this chart with made-up readings." /> : readings.map(item => <Panel key={item.id}><View style={styles.between}><View><Text style={styles.panelTitle}>{item.parameter.replaceAll('_', ' ')}</Text><Text style={styles.panelBody}>{new Date(item.observedAt).toLocaleString()} · {item.method} · {sampleSourceLabel(item.sampleSource)}</Text></View><Text style={styles.historyValue}>{item.value} {item.unit}</Text></View></Panel>)}
     <Text style={styles.sectionTitle}>Care timeline</Text>{[...tank.activities].sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt)).map(item => <View key={item.id} style={styles.timeline}><View style={styles.timelineDot} /><View style={styles.grow}><Text style={styles.timelineTitle}>{item.type.replaceAll('_', ' ')}</Text><Text style={styles.timelineBody}>{item.breathing ? `${item.breathing.subject} · ${item.breathing.behavior} · ${item.breathing.active ? 'ongoing at observation' : 'no longer happening'} · ${new Date(item.occurredAt).toLocaleTimeString()} · ` : ''}{item.missingFishName ? item.missingFishName + ' · ' : ''}{item.bodyCondition ? `${item.bodyCondition.subject} · ${item.bodyCondition.status} · ${item.bodyCondition.date}` : ''}{item.bodyCondition ? ' · ' : ''}{item.note ?? 'No note'}{(item.type === 'uncertain_nitrite' || item.type === 'uncertain_ammonia') ? ' · ' + sampleSourceLabel(item.sampleSource) : ''} · {new Date(item.occurredAt).toLocaleDateString()}</Text></View></View>)}
