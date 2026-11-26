@@ -12,6 +12,21 @@ const safeReadings: Reading[] = [
 const safeTank: Tank = { ...sampleTank, sourceWaterNitrate: 5, readings: safeReadings };
 
 describe('VELYQUA decision engine', () => {
+  it('flags fresh positive nitrite before requesting missing tests', () => {
+    const reading = { ...safeReadings[1], value: 0.37 };
+    const recommendation = evaluateTank({ ...safeTank, readings: [reading] });
+    expect(recommendation.state).toBe('needs_attention');
+    expect(recommendation.reason).toContain('Nitrite');
+    expect(recommendation.action).toContain('fresh tests for ammonia and nitrate');
+  });
+
+  it('requests a fresh nitrite test when the only reading is stale', () => {
+    const reading = { ...safeReadings[1], value: 0.37, observedAt: hoursAgo(169) };
+    const recommendation = evaluateTank({ ...safeTank, readings: [reading] });
+    expect(recommendation.state).toBe('more_information_needed');
+    expect(recommendation.action).toMatch(/fresh tests.*nitrite/);
+  });
+
   it('returns all clear for a complete safe test fixture', () => {
     expect(evaluateTank(safeTank).state).toBe('all_clear');
   });
