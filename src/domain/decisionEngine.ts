@@ -25,20 +25,27 @@ export function evaluateTank(tank: Tank): Recommendation {
     });
   }
   const assessment = evaluateConfirmedEvidence(tank);
-  const confirmed = latest(tank, 'nitrite');
-  const pending = tank.activities.some(activity => activity.type === 'uncertain_nitrite' && activity.sampleSource !== 'tap' &&
-    Date.parse(activity.occurredAt) > (confirmed ? Date.parse(confirmed.observedAt) : -Infinity));
-  if (!pending) return assessment;
-  const nitriteRetest = confirmed
-    ? `Last confirmed nitrite: ${confirmed.value} ${confirmed.unit} · ${new Date(confirmed.observedAt).toLocaleString()}`
-    : 'No confirmed nitrite reading yet.';
+  const pending = (['nitrite', 'ammonia'] as const).flatMap(parameter => {
+    const confirmed = latest(tank, parameter);
+    const cutoff = confirmed ? Date.parse(confirmed.observedAt) : -Infinity;
+    const uncertain = tank.activities.some(activity => activity.type === `uncertain_${parameter}` &&
+      activity.sampleSource !== 'tap' && Date.parse(activity.occurredAt) > cutoff);
+    if (!uncertain) return [];
+    const detail = confirmed
+      ? `Last confirmed ${parameter}: ${confirmed.value} ${confirmed.unit} · ${new Date(confirmed.observedAt).toLocaleString()}`
+      : `No confirmed ${parameter} reading yet.`;
+    return [{ parameter, detail }];
+  });
+  if (!pending.length) return assessment;
+  const parameters = pending.map(item => item.parameter).join(' and ');
+  const retestDetail = pending.map(item => item.detail).join('\n');
   if (assessment.state === 'needs_attention') {
-    return { ...assessment, action: assessment.action + ' Retest needed for nitrite.', nitriteRetest };
+    return { ...assessment, action: assessment.action + ` Retest needed for ${parameters}.`, retestDetail };
   }
   return result('more_information_needed', {
-    title: 'Retest needed', reason: 'The latest nitrite test was recorded as uncertain.',
-    action: 'Repeat the nitrite test and record the confirmed result.',
-    confidence: 'limited', estimatedMinutes: 5, evidence: ['Keeper-recorded uncertain nitrite test'], nitriteRetest
+    title: 'Retest needed', reason: `Uncertain tank test: ${parameters}.`,
+    action: `Repeat tank testing for ${parameters} and record the confirmed result.`,
+    confidence: 'limited', estimatedMinutes: 5, evidence: pending.map(item => `Keeper-recorded uncertain ${item.parameter} test`), retestDetail
   });
 }
 
