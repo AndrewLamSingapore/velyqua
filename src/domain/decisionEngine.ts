@@ -13,34 +13,42 @@ export function evaluateTank(tank: Tank): Recommendation {
   const ammonia = latest(tank, 'ammonia');
   const nitrite = latest(tank, 'nitrite');
   const nitrate = latest(tank, 'nitrate');
+  const nitrogen = { ammonia, nitrite, nitrate };
+  const fresh = (reading: typeof nitrite) => {
+    const age = reading ? ageHours(reading.observedAt) : NaN;
+    return age >= 0 && age <= 168;
+  };
+  const concern = [ammonia, nitrite].find(reading => reading && reading.value > 0 && fresh(reading));
+  const pending = Object.entries(nitrogen).filter(([, reading]) => !fresh(reading)).map(([name]) => name);
+
+  if (concern) {
+    return result('needs_attention', {
+      title: 'Confirmed reading needs attention',
+      action: 'Verify the result now and prepare a conservative partial water change.' +
+        (pending.length ? ` Follow up with fresh tests for ${pending.join(' and ')}.` : ''),
+      reason: `${concern.parameter === 'ammonia' ? 'Ammonia' : 'Nitrite'} is above zero in a confirmed recent test.`,
+      confidence: 'strong', estimatedMinutes: 10,
+      evidence: ['Fresh confirmed owner reading', 'Rule OA-FW-URG-001']
+    });
+  }
 
   if (!ammonia || !nitrite || !nitrate) {
     return result('more_information_needed', {
       title: 'One water test will make this clearer',
-      action: 'Record ammonia, nitrite and nitrate',
+      action: `Record fresh tests for ${pending.join(', ')}`,
       reason: 'VELYQUA will not claim the tank is clear while a decision-critical reading is missing.',
       confidence: 'limited', estimatedMinutes: 5,
       evidence: ['Missing nitrogen-cycle reading']
     });
   }
 
-  if (ageHours(ammonia.observedAt) > 168 || ageHours(nitrite.observedAt) > 168 || ageHours(nitrate.observedAt) > 168) {
+  if (pending.length) {
     return result('more_information_needed', {
       title: 'Your water picture is out of date',
       action: 'Run a fresh water test',
-      reason: 'The latest decision-critical test is more than seven days old.',
+      reason: 'A decision-critical reading needs a current test date.',
       confidence: 'limited', estimatedMinutes: 5,
       evidence: ['Freshness rule OA-FW-001']
-    });
-  }
-
-  if (ammonia.value > 0 || nitrite.value > 0) {
-    return result('needs_attention', {
-      title: 'Confirmed reading needs attention',
-      action: 'Verify the result now and prepare a conservative partial water change',
-      reason: `${ammonia.value > 0 ? 'Ammonia' : 'Nitrite'} is above zero in a confirmed recent test.`,
-      confidence: 'strong', estimatedMinutes: 10,
-      evidence: ['Fresh confirmed owner reading', 'Rule OA-FW-URG-001']
     });
   }
 
