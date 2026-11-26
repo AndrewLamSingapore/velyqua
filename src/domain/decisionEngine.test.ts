@@ -4,7 +4,7 @@ import { sampleTank } from './sample';
 import { Reading, Tank } from './types';
 
 const hoursAgo = (hours: number) => new Date(Date.now() - hours * 3_600_000).toISOString();
-const safeReadings: Reading[] = [
+const safeReadings: [Reading, Reading, Reading] = [
   { id: 'test-ammonia', parameter: 'ammonia', value: 0, unit: 'mg/L', observedAt: hoursAgo(1), method: 'test fixture' },
   { id: 'test-nitrite', parameter: 'nitrite', value: 0, unit: 'mg/L', observedAt: hoursAgo(1), method: 'test fixture' },
   { id: 'test-nitrate', parameter: 'nitrate', value: 30, unit: 'mg/L', observedAt: hoursAgo(1), method: 'test fixture' }
