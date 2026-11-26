@@ -17,7 +17,9 @@
 
 Software-first, hardware-agnostic water intelligence, beginning with aquariums. Manual tests, sensors, APIs and human observations feed a common observation model. The ESP32 is an R&D reference node, not a required proprietary device.
 
-[**Open VELYQUA ↗**](https://velyqua.vercel.app/) · [**Discuss this project**](https://authority-engine-app.vercel.app/contact?source=velyqua) · [**Meet Andrew Lam**](https://authority-engine-app.vercel.app/about)
+[**Explore the product website**](https://velyqua-website.vercel.app/) · [**Open the aquarium app**](https://velyqua.vercel.app/) · [**Architecture Studio**](https://velyqua-workspace.five12345.chatgpt.site/) · [**Discuss this project**](https://authority-engine-app.vercel.app/contact?source=velyqua) · [**Meet Andrew Lam**](https://authority-engine-app.vercel.app/about)
+
+The [product website source](https://github.com/AndrewLamSingapore/velyqua-website) owns the cinematic introduction and shared visual tokens. This repository owns aquarium records, accounts, sync and product logic. Both belong to one VELYQUA experience.
 
 ## Explore the public experience
 
@@ -61,13 +63,13 @@ A candidate pilot would compare timestamped group-level fish-zone observations w
 
 [Report a bug](https://github.com/AndrewLamSingapore/velyqua/issues) · [Ask a question](https://github.com/AndrewLamSingapore/velyqua/discussions) · [Wiki](https://github.com/AndrewLamSingapore/velyqua/wiki)
 
-[Browse all six projects and their source](https://github.com/AndrewLamSingapore/AndrewLamSingapore#selected-work) · [About Andrew](https://authority-engine-app.vercel.app/about)
+[Browse the project and source directory](https://github.com/AndrewLamSingapore/AndrewLamSingapore#selected-work) · [About Andrew](https://authority-engine-app.vercel.app/about)
 
 ## Connected work
 
 [**Explore ORQEVIA**](https://authority-engine-app.vercel.app/orqevia) · [**Meet Andrew**](https://authority-engine-app.vercel.app/about) · [**Start a conversation**](https://authority-engine-app.vercel.app/contact?source=velyqua&intent=collaboration)
 
-ORQEVIA’s public walkthrough connects this project to Andrew’s wider work. Public navigation and enquiries do not merge accounts, data or runtime authority. Current operational evidence comes from the canonical portfolio record; this README describes source capabilities.
+ORQEVIA’s public walkthrough connects this project to Andrew’s wider work. Public navigation and enquiries do not merge accounts, data or runtime authority. Each product owns its source and domain records. Current operation requires its own deployment and runtime evidence; this README describes source capabilities.
 
 ### Existing prototype
 
@@ -254,7 +256,7 @@ VELYQUA is the flagship BUILD project in [Andrew Lam's operations-intelligence p
 
 ## Status and evidence
 
-> Portfolio status: [STATUS.md](https://github.com/AndrewLamSingapore/orqevia/blob/main/STATUS.md) is the sole portfolio status reference. Each product owns its source, configuration, contracts and domain records. The [operational manifest](https://github.com/AndrewLamSingapore/orqevia/blob/main/governance/operational-manifest.json) provides dated ORQEVIA component and observation references; it does not establish deployment status.
+> Current ORQEVIA source: [ORQEVIA-CURRENT-STATE.md](https://github.com/AndrewLamSingapore/orqevia/blob/main/ORQEVIA-CURRENT-STATE.md), reached through the portfolio pointer [STATUS.md](https://github.com/AndrewLamSingapore/orqevia/blob/main/STATUS.md). Each product owns its source, configuration, contracts and domain records. The [operational manifest](https://github.com/AndrewLamSingapore/orqevia/blob/main/governance/operational-manifest.json) is a dated historical reference. Source, CI, deployment and runtime acceptance are separate evidence.
 
 ## Campaign visual
 
