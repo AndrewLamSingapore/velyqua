@@ -2,7 +2,7 @@ import { AquaState, Recommendation, Tank, WaterChangePreview, WaterParameter } f
 
 const latest = (tank: Tank, parameter: WaterParameter) =>
   tank.readings
-    .filter((reading) => reading.parameter === parameter)
+    .filter((reading) => reading.parameter === parameter && reading.sampleSource !== 'tap')
     .sort((a, b) => Date.parse(b.observedAt) - Date.parse(a.observedAt))[0];
 
 const ageHours = (iso: string) => (Date.now() - Date.parse(iso)) / 3_600_000;
@@ -12,7 +12,7 @@ const result = (state: AquaState, values: Omit<Recommendation, 'state'>): Recomm
 export function evaluateTank(tank: Tank): Recommendation {
   const assessment = evaluateConfirmedEvidence(tank);
   const confirmed = latest(tank, 'nitrite');
-  const pending = tank.activities.some(activity => activity.type === 'uncertain_nitrite' &&
+  const pending = tank.activities.some(activity => activity.type === 'uncertain_nitrite' && activity.sampleSource !== 'tap' &&
     Date.parse(activity.occurredAt) > (confirmed ? Date.parse(confirmed.observedAt) : -Infinity));
   if (!pending) return assessment;
   const nitriteRetest = confirmed

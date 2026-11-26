@@ -12,6 +12,17 @@ const safeReadings: [Reading, Reading, Reading] = [
 const safeTank: Tank = { ...sampleTank, sourceWaterNitrate: 5, readings: safeReadings };
 
 describe('VELYQUA decision engine', () => {
+  it('keeps legacy tank warnings independent of confirmed and uncertain tap tests', () => {
+    const positive = { ...safeReadings[1], value: 0.37 };
+    const tap = { ...safeReadings[1], observedAt: hoursAgo(0.5), sampleSource: 'tap' as const };
+    const tank = { ...safeTank, readings: [positive, tap, safeReadings[0], safeReadings[2]] };
+    expect(evaluateTank(tank).state).toBe('needs_attention');
+    const confirmed = { ...tap, observedAt: hoursAgo(0.2), sampleSource: 'tank' as const };
+    expect(evaluateTank({ ...tank, readings: [confirmed, ...tank.readings], activities: [
+      { id: 'tap', type: 'uncertain_nitrite', occurredAt: hoursAgo(0.1), sampleSource: 'tap' }
+    ] }).state).toBe('all_clear');
+  });
+
   it('compares consecutive dated body condition entries within each fish or group', () => {
     function observation(date: string, subject: string, status: 'worsening' | 'improving' = 'worsening'): Tank['activities'][number] {
       return { id: date + subject, type: 'body_condition', occurredAt: date + 'T12:00:00Z', bodyCondition: { subject, status, date } };

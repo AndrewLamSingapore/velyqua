@@ -15,7 +15,14 @@ export type WaterParameter =
 
 export type ReadingUnit = '°C' | 'mg/L' | 'pH' | 'dGH' | 'dKH' | 'ppm' | 'µS/cm';
 
+export type SampleSource = 'tank' | 'tap';
+
+export function sampleSourceLabel(source?: SampleSource) {
+  return source === 'tank' ? 'Tank' : source === 'tap' ? 'Tap water' : 'Source not recorded';
+}
+
 export type Reading = {
+  sampleSource?: SampleSource;
   id: string;
   parameter: WaterParameter;
   value: number;
@@ -32,6 +39,7 @@ export type Reading = {
 };
 
 export type Activity = {
+  sampleSource?: SampleSource;
   id: string;
   type:
     | 'water_change'

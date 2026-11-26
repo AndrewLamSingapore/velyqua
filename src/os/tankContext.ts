@@ -18,7 +18,8 @@ export type TankContextPacket = {
 };
 
 export function buildTankContext(tank: Tank, generatedAt = new Date().toISOString()): TankContextPacket {
-  const latestReadings = [...tank.readings]
+  const tankReadings = tank.readings.filter(reading => reading.sampleSource !== 'tap');
+  const latestReadings = [...tankReadings]
     .sort((left, right) => Date.parse(right.observedAt) - Date.parse(left.observedAt))
     .reduce<Partial<Record<WaterParameter, Reading>>>((latest, reading) => {
       if (!latest[reading.parameter]) latest[reading.parameter] = reading;
@@ -44,7 +45,7 @@ export function buildTankContext(tank: Tank, generatedAt = new Date().toISOStrin
       .sort((left, right) => Date.parse(right.occurredAt) - Date.parse(left.occurredAt))
       .slice(0, 20),
     currentState: evaluateTank(tank),
-    thermalForecast: forecastTemperature(tank.readings),
+    thermalForecast: forecastTemperature(tankReadings),
     inventorySummary: {
       livestockRecords: tank.livestock?.filter((item) => item.status === 'active').length ?? 0,
       plants: tank.plants?.filter((item) => item.status === 'active').length ?? 0,

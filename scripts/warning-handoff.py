@@ -94,8 +94,43 @@ def verify_missing_fish(browser, url):
     context.close()
 
 
+def verify_sample_source(browser, url):
+    context = browser.new_context()
+    page = context.new_page()
+    page.goto(url)
+    def water(parameter, value, tap=False):
+        page.get_by_role("button", name="Record an observation").click()
+        expect(page.get_by_role("radio", name="Tank", exact=True)).to_be_checked()
+        if tap:
+            page.get_by_role("radio", name="Tap water").click()
+        page.get_by_text(parameter, exact=True).last.click()
+        page.get_by_label("Water test value").fill(value)
+        page.get_by_text("Save update", exact=True).click()
+        expect(page.get_by_text("Quick Update", exact=True)).to_be_hidden()
+    water("ammonia", "0")
+    water("nitrate", "10")
+    water("nitrite", "0.37")
+    water("nitrite", "0", tap=True)
+    warning = "Nitrite is above zero in a confirmed recent test."
+    expect(page.get_by_text(warning, exact=True).first).to_be_visible()
+    page.close()
+    page = context.new_page()
+    page.goto(url)
+    expect(page.get_by_text(warning, exact=True).first).to_be_visible()
+    page.get_by_role("tab", name="History").click()
+    import re
+    history = page.locator("body")
+    for source, value in [("Tank", "0.37"), ("Tap water", "0")]:
+        expect(history).to_contain_text(re.compile(r"nitrite\s+[^\n]*manual entry · " + source + r"\s+" + re.escape(value) + r" mg/L", re.I))
+    page.get_by_role("tab", name="Home").click()
+    water("nitrite", "0")
+    expect(page.get_by_text("ALL CLEAR", exact=True).first).to_be_visible()
+    context.close()
+
+
 if __name__ == "__main__":
     with sync_playwright() as playwright:
         with playwright.chromium.launch() as browser:
             verify(browser, sys.argv[1])
             verify_missing_fish(browser, sys.argv[1])
+            verify_sample_source(browser, sys.argv[1])
