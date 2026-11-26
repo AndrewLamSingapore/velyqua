@@ -9,7 +9,21 @@ const ageHours = (iso: string) => (Date.now() - Date.parse(iso)) / 3_600_000;
 
 const result = (state: AquaState, values: Omit<Recommendation, 'state'>): Recommendation => ({ state, ...values });
 
+export function activeBreathingReports(tank: Tank) {
+  const resolved = new Set(tank.activities.filter(item => item.type === 'breathing_resolved').map(item => item.relatedRecordId));
+  return tank.activities.filter(item => item.type === 'breathing_observation' && item.breathing?.active && !resolved.has(item.id));
+}
+
 export function evaluateTank(tank: Tank): Recommendation {
+  const report = activeBreathingReports(tank)[0];
+  if (report?.breathing) {
+    return result('needs_attention', {
+      title: 'Check the affected fish now',
+      reason: `You reported ${report.breathing.behavior} in ${report.breathing.subject} and marked it as ongoing.`,
+      action: 'Check the fish and aeration now. Measure dissolved oxygen if you can.',
+      confidence: 'partial', estimatedMinutes: 1, evidence: ['Keeper-reported breathing behavior'], showBreathingHistory: true
+    });
+  }
   const assessment = evaluateConfirmedEvidence(tank);
   const confirmed = latest(tank, 'nitrite');
   const pending = tank.activities.some(activity => activity.type === 'uncertain_nitrite' && activity.sampleSource !== 'tap' &&

@@ -52,6 +52,8 @@ export type Activity = {
     | 'plant_care'
     | 'livestock_observation'
     | 'livestock_loss'
+    | 'breathing_observation'
+    | 'breathing_resolved'
     | 'fish_missing'
     | 'fish_found'
     | 'body_condition'
@@ -63,6 +65,7 @@ export type Activity = {
   note?: string;
   percentage?: number;
   bodyCondition?: { subject: string; status: 'stable' | 'improving' | 'worsening'; date: string };
+  breathing?: { subject: string; behavior: 'gasping' | 'abnormal breathing'; active: boolean };
   missingFishName?: string;
   relatedRecordId?: string;
   updatedAt?: string;
@@ -178,6 +181,7 @@ export type Recommendation = {
   confidence: 'strong' | 'partial' | 'limited';
   estimatedMinutes: number;
   evidence: string[];
+  showBreathingHistory?: boolean;
   showLossHistory?: boolean;
   showConditionHistory?: boolean;
   nitriteRetest?: string;
