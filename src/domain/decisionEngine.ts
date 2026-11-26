@@ -64,6 +64,25 @@ function evaluateConfirmedEvidence(tank: Tank): Recommendation {
     });
   }
 
+  // Use the latest update for each subject on each observation date.
+  const trends = new Map<string, { date: string; worsening: boolean }>();
+  for (const activity of [...tank.activities].sort((a, b) => b.occurredAt.localeCompare(a.occurredAt) || (b.updatedAt ?? '').localeCompare(a.updatedAt ?? ''))) {
+    const entry = activity.bodyCondition;
+    if (activity.type !== 'body_condition' || !entry?.subject.trim()) continue;
+    const key = entry.subject.trim().toLowerCase();
+    const newer = trends.get(key);
+    if (newer?.date === entry.date || newer?.worsening === false) continue;
+    if (newer && entry.status === 'worsening') {
+      return result('needs_attention', {
+        title: 'Repeated worsening body condition',
+        reason: `You recorded worsening body condition for ${entry.subject} on ${entry.date} and ${newer.date}.`,
+        action: 'Review the dated observations for this fish or group.',
+        confidence: 'partial', estimatedMinutes: 5, evidence: ['Keeper-recorded body condition'], showConditionHistory: true
+      });
+    }
+    trends.set(key, { date: entry.date, worsening: entry.status === 'worsening' });
+  }
+
   if (!ammonia || !nitrite || !nitrate) {
     return result('more_information_needed', {
       title: 'One water test will make this clearer',

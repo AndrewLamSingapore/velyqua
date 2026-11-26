@@ -12,6 +12,20 @@ const safeReadings: [Reading, Reading, Reading] = [
 const safeTank: Tank = { ...sampleTank, sourceWaterNitrate: 5, readings: safeReadings };
 
 describe('VELYQUA decision engine', () => {
+  it('compares consecutive dated body condition entries within each fish or group', () => {
+    function observation(date: string, subject: string, status: 'worsening' | 'improving' = 'worsening'): Tank['activities'][number] {
+      return { id: date + subject, type: 'body_condition', occurredAt: date + 'T12:00:00Z', bodyCondition: { subject, status, date } };
+    }
+    const first = observation('2026-11-01', 'Guppy A');
+    const second = observation('2026-11-02', 'guppy a');
+    const tank = { ...safeTank, activities: [first, second] };
+    expect(evaluateTank(tank)).toMatchObject({ state: 'needs_attention', showConditionHistory: true });
+    expect(evaluateTank({ ...tank, activities: [first, observation('2026-11-02', 'Guppy B')] }).state).toBe('all_clear');
+    expect(evaluateTank({ ...tank, activities: [first, first] }).state).toBe('all_clear');
+    expect(evaluateTank({ ...tank, activities: [...tank.activities, observation('2026-11-03', 'Guppy A', 'improving')] }).state).toBe('all_clear');
+    expect(evaluateTank({ ...tank, readings: [{ ...safeReadings[1], value: 0.37 }] }).reason).toContain('Nitrite');
+  });
+
   it('keeps an uncertain nitrite result pending until a newer confirmed reading', () => {
     const activities: Tank['activities'] = [{ id: 'uncertain', type: 'uncertain_nitrite', occurredAt: hoursAgo(0.5) }];
     const tank = { ...safeTank, activities };

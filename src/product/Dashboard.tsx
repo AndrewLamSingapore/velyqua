@@ -53,7 +53,7 @@ function Home({ tank, onQuickUpdate, publicAccess, onHistory }: { onHistory: () 
   const recommendation = useMemo(() => evaluateTank(tank), [tank]);
   const latest = [...tank.readings].sort((a, b) => Date.parse(b.observedAt) - Date.parse(a.observedAt))[0];
   const state = recommendation.state;
-  const showRecommendation = tank.readings.length > 0 || recommendation.showLossHistory || recommendation.nitriteRetest;
+  const showRecommendation = tank.readings.length > 0 || recommendation.showLossHistory || recommendation.showConditionHistory || recommendation.nitriteRetest;
   return <>
     <View style={styles.heroRow}>
       <View style={styles.heroCopy}><Text style={styles.kicker}>INTELLIGENCE FOR LIVING WATER</Text><Text accessibilityRole="header" style={styles.hero}>Understand your water. Remember every change.</Text><Text style={styles.subhero}>Water tests, keeper observations and care history in one place. Start with what you can observe, then follow what changes over time.</Text></View>
@@ -63,6 +63,7 @@ function Home({ tank, onQuickUpdate, publicAccess, onHistory }: { onHistory: () 
       <View style={styles.dividerDark} />
       <Text style={styles.darkAction}>{showRecommendation ? recommendation.action : 'Add a manual water test or record a care action.'}</Text>
       {recommendation.nitriteRetest && <Text style={styles.darkBody}>{recommendation.nitriteRetest}</Text>}
+      {recommendation.showConditionHistory && <Pressable accessibilityRole="button" onPress={onHistory} style={styles.lightButton}><Text style={styles.lightButtonText}>View body condition history</Text></Pressable>}
       {recommendation.showLossHistory && <Pressable accessibilityRole="button" onPress={onHistory} style={styles.lightButton}><Text style={styles.lightButtonText}>View loss history</Text></Pressable>}
       <Pressable accessibilityRole="button" style={styles.lightButton} onPress={onQuickUpdate}><Text style={styles.lightButtonText}>Record an observation</Text></Pressable>
     </Panel>
@@ -103,7 +104,7 @@ function History({ tank }: { tank: Tank }) {
   return <><Text style={styles.kicker}>HISTORY</Text><Text accessibilityRole="header" style={styles.hero}>A record you can trust.</Text><Text style={styles.subhero}>Only owner observations and admitted physical telemetry belong here.</Text>
     <Text style={styles.panelBody}>All recorded water tests, newest first.</Text>
     {readings.length === 0 ? <Empty title="No water history yet" body="Connect a physical sensor or record a manual test. VELYQUA will never fill this chart with made-up readings." /> : readings.map(item => <Panel key={item.id}><View style={styles.between}><View><Text style={styles.panelTitle}>{item.parameter.replaceAll('_', ' ')}</Text><Text style={styles.panelBody}>{new Date(item.observedAt).toLocaleString()} · {item.method}</Text></View><Text style={styles.historyValue}>{item.value} {item.unit}</Text></View></Panel>)}
-    <Text style={styles.sectionTitle}>Care timeline</Text>{[...tank.activities].sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt)).map(item => <View key={item.id} style={styles.timeline}><View style={styles.timelineDot} /><View style={styles.grow}><Text style={styles.timelineTitle}>{item.type.replaceAll('_', ' ')}</Text><Text style={styles.timelineBody}>{item.note ?? 'No note'} · {new Date(item.occurredAt).toLocaleDateString()}</Text></View></View>)}
+    <Text style={styles.sectionTitle}>Care timeline</Text>{[...tank.activities].sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt)).map(item => <View key={item.id} style={styles.timeline}><View style={styles.timelineDot} /><View style={styles.grow}><Text style={styles.timelineTitle}>{item.type.replaceAll('_', ' ')}</Text><Text style={styles.timelineBody}>{item.bodyCondition ? `${item.bodyCondition.subject} · ${item.bodyCondition.status} · ${item.bodyCondition.date}` : ''}{item.bodyCondition ? ' · ' : ''}{item.note ?? 'No note'} · {new Date(item.occurredAt).toLocaleDateString()}</Text></View></View>)}
   </>;
 }
 
