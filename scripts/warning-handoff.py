@@ -121,7 +121,7 @@ def verify_sample_source(browser, url):
     import re
     history = page.locator("body")
     for source, value in [("Tank", "0.37"), ("Tap water", "0")]:
-        expect(history).to_contain_text(re.compile(r"nitrite\s+[^\n]*manual entry · " + source + r"\s+" + re.escape(value) + r" mg/L", re.I))
+        expect(history).to_contain_text(re.compile(r"nitrite\s+[^\n]*manual entry · " + source + r"\s+" + re.escape(value) + r" mg/L", re.I), use_inner_text=True)
     page.get_by_role("tab", name="Home").click()
     water("nitrite", "0")
     expect(page.get_by_text("ALL CLEAR", exact=True).first).to_be_visible()
