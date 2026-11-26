@@ -1,3 +1,4 @@
+import { sampleSourceLabel } from '../domain/types';
 import React, { useMemo, useState } from 'react';
 import { Linking, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { evaluateTank } from '../domain/decisionEngine';
@@ -51,7 +52,7 @@ function Empty({ title, body }: { title: string; body: string }) {
 
 function Home({ tank, onQuickUpdate, publicAccess, onHistory }: { onHistory: () => void; tank: Tank; onQuickUpdate: () => void; publicAccess: boolean }) {
   const recommendation = useMemo(() => evaluateTank(tank), [tank]);
-  const latest = [...tank.readings].sort((a, b) => Date.parse(b.observedAt) - Date.parse(a.observedAt))[0];
+  const latest = tank.readings.filter(item => item.sampleSource !== 'tap').sort((a, b) => Date.parse(b.observedAt) - Date.parse(a.observedAt))[0];
   const state = recommendation.state;
   const showRecommendation = tank.readings.length > 0 || recommendation.showLossHistory || recommendation.showConditionHistory || recommendation.nitriteRetest;
   return <>
@@ -83,7 +84,7 @@ function Home({ tank, onQuickUpdate, publicAccess, onHistory }: { onHistory: () 
 }
 
 function Live({ tank }: { tank: Tank }) {
-  const readings = [...tank.readings].sort((a, b) => Date.parse(b.observedAt) - Date.parse(a.observedAt));
+  const readings = tank.readings.filter(item => item.sampleSource !== 'tap').sort((a, b) => Date.parse(b.observedAt) - Date.parse(a.observedAt));
   return <>
     <Text style={styles.kicker}>LIVE WATER</Text><Text accessibilityRole="header" style={styles.hero}>Physical readings, with their age and quality.</Text><Text style={styles.subhero}>Stale, missing and simulated values are always labelled.</Text>
     <Panel tone="amber"><View style={styles.between}><View style={styles.grow}><Text style={styles.panelTitle}>Sensors have not been physically commissioned</Text><Text style={styles.panelBody}>The ESP32-S3 foundation passed commissioning. The physical probes and their readings remain untested.</Text></View><Pill tone="warn">AWAITING SENSORS</Pill></View></Panel>
@@ -122,8 +123,8 @@ function History({ tank, onResolveMissing }: { tank: Tank; onResolveMissing: Res
     </Panel>)}
     {error ? <Text>{error}</Text> : null}
     <Text style={styles.panelBody}>All recorded water tests, newest first.</Text>
-    {readings.length === 0 ? <Empty title="No water history yet" body="Connect a physical sensor or record a manual test. VELYQUA will never fill this chart with made-up readings." /> : readings.map(item => <Panel key={item.id}><View style={styles.between}><View><Text style={styles.panelTitle}>{item.parameter.replaceAll('_', ' ')}</Text><Text style={styles.panelBody}>{new Date(item.observedAt).toLocaleString()} · {item.method}</Text></View><Text style={styles.historyValue}>{item.value} {item.unit}</Text></View></Panel>)}
-    <Text style={styles.sectionTitle}>Care timeline</Text>{[...tank.activities].sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt)).map(item => <View key={item.id} style={styles.timeline}><View style={styles.timelineDot} /><View style={styles.grow}><Text style={styles.timelineTitle}>{item.type.replaceAll('_', ' ')}</Text><Text style={styles.timelineBody}>{item.missingFishName ? item.missingFishName + ' · ' : ''}{item.bodyCondition ? `${item.bodyCondition.subject} · ${item.bodyCondition.status} · ${item.bodyCondition.date}` : ''}{item.bodyCondition ? ' · ' : ''}{item.note ?? 'No note'} · {new Date(item.occurredAt).toLocaleDateString()}</Text></View></View>)}
+    {readings.length === 0 ? <Empty title="No water history yet" body="Connect a physical sensor or record a manual test. VELYQUA will never fill this chart with made-up readings." /> : readings.map(item => <Panel key={item.id}><View style={styles.between}><View><Text style={styles.panelTitle}>{item.parameter.replaceAll('_', ' ')}</Text><Text style={styles.panelBody}>{new Date(item.observedAt).toLocaleString()} · {item.method} · {sampleSourceLabel(item.sampleSource)}</Text></View><Text style={styles.historyValue}>{item.value} {item.unit}</Text></View></Panel>)}
+    <Text style={styles.sectionTitle}>Care timeline</Text>{[...tank.activities].sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt)).map(item => <View key={item.id} style={styles.timeline}><View style={styles.timelineDot} /><View style={styles.grow}><Text style={styles.timelineTitle}>{item.type.replaceAll('_', ' ')}</Text><Text style={styles.timelineBody}>{item.missingFishName ? item.missingFishName + ' · ' : ''}{item.bodyCondition ? `${item.bodyCondition.subject} · ${item.bodyCondition.status} · ${item.bodyCondition.date}` : ''}{item.bodyCondition ? ' · ' : ''}{item.note ?? 'No note'}{item.type === 'uncertain_nitrite' ? ' · ' + sampleSourceLabel(item.sampleSource) : ''} · {new Date(item.occurredAt).toLocaleDateString()}</Text></View></View>)}
   </>;
 }
 
