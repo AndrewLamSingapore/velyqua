@@ -1,7 +1,7 @@
 import { sampleSourceLabel } from '../domain/types';
 import React, { useMemo, useState } from 'react';
 import { Linking, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
-import { evaluateTank } from '../domain/decisionEngine';
+import { activeBreathingReports, evaluateTank } from '../domain/decisionEngine';
 import { Tank } from '../domain/types';
 import { CreatorConnection } from './CreatorConnection';
 import { PublicProofExperience } from './PublicProofExperience';
@@ -54,7 +54,7 @@ function Home({ tank, onQuickUpdate, publicAccess, onHistory }: { onHistory: () 
   const recommendation = useMemo(() => evaluateTank(tank), [tank]);
   const latest = tank.readings.filter(item => item.sampleSource !== 'tap').sort((a, b) => Date.parse(b.observedAt) - Date.parse(a.observedAt))[0];
   const state = recommendation.state;
-  const showRecommendation = tank.readings.length > 0 || recommendation.showLossHistory || recommendation.showConditionHistory || recommendation.nitriteRetest;
+  const showRecommendation = tank.readings.length > 0 || recommendation.showBreathingHistory || recommendation.showLossHistory || recommendation.showConditionHistory || recommendation.nitriteRetest;
   return <>
     <View style={styles.heroRow}>
       <View style={styles.heroCopy}><Text style={styles.kicker}>INTELLIGENCE FOR LIVING WATER</Text><Text accessibilityRole="header" style={styles.hero}>Understand your water. Remember every change.</Text><Text style={styles.subhero}>Water tests, keeper observations and care history in one place. Start with what you can observe, then follow what changes over time.</Text></View>
@@ -65,6 +65,7 @@ function Home({ tank, onQuickUpdate, publicAccess, onHistory }: { onHistory: () 
       <Text style={styles.darkAction}>{showRecommendation ? recommendation.action : 'Add a manual water test or record a care action.'}</Text>
       {recommendation.nitriteRetest && <Text style={styles.darkBody}>{recommendation.nitriteRetest}</Text>}
       {recommendation.showConditionHistory && <Pressable accessibilityRole="button" onPress={onHistory} style={styles.lightButton}><Text style={styles.lightButtonText}>View body condition history</Text></Pressable>}
+      {recommendation.showBreathingHistory && <Pressable accessibilityRole="button" onPress={onHistory} style={styles.lightButton}><Text style={styles.lightButtonText}>Review breathing observations</Text></Pressable>}
       {recommendation.showLossHistory && <Pressable accessibilityRole="button" onPress={onHistory} style={styles.lightButton}><Text style={styles.lightButtonText}>View loss history</Text></Pressable>}
       <Pressable accessibilityRole="button" style={styles.lightButton} onPress={onQuickUpdate}><Text style={styles.lightButtonText}>Record an observation</Text></Pressable>
     </Panel>
@@ -100,18 +101,24 @@ function Live({ tank }: { tank: Tank }) {
   </>;
 }
 
-type ResolveMissing = (id: string, outcome: 'fish_found' | 'livestock_loss') => Promise<void>;
+type ResolveMissing = (id: string, outcome: 'fish_found' | 'livestock_loss' | 'breathing_resolved') => Promise<void>;
 
 function History({ tank, onResolveMissing }: { tank: Tank; onResolveMissing: ResolveMissing }) {
   const [error, setError] = useState('');
   const resolved = new Set(tank.activities.filter(item => item.type === 'fish_found' || item.type === 'livestock_loss').map(item => item.relatedRecordId));
   const openCases = tank.activities.filter(item => item.type === 'fish_missing' && !resolved.has(item.id));
-  const resolve = async (id: string, outcome: 'fish_found' | 'livestock_loss') => {
+  const resolve = async (id: string, outcome: 'fish_found' | 'livestock_loss' | 'breathing_resolved') => {
     try { setError(''); await onResolveMissing(id, outcome); }
     catch { setError('Could not save the outcome. Please try again.'); }
   };
   const readings = [...tank.readings].sort((a, b) => Date.parse(b.observedAt) - Date.parse(a.observedAt));
   return <><Text style={styles.kicker}>HISTORY</Text><Text accessibilityRole="header" style={styles.hero}>A record you can trust.</Text><Text style={styles.subhero}>Only owner observations and admitted physical telemetry belong here.</Text>
+    {activeBreathingReports(tank).map(item => <Panel key={item.id}>
+      <Text style={styles.panelTitle}>{item.breathing?.subject} · {item.breathing?.behavior}</Text>
+      <Text style={styles.panelBody}>{new Date(item.occurredAt).toLocaleString()}</Text>
+      <Pressable accessibilityRole="button" accessibilityLabel={'Mark breathing resolved for ' + item.breathing?.subject}
+        onPress={() => resolve(item.id, 'breathing_resolved')} style={styles.lightButton}><Text style={styles.lightButtonText}>Mark resolved</Text></Pressable>
+    </Panel>)}
     {openCases.map(item => <Panel key={item.id}>
       <Text style={styles.panelTitle}>Missing: {item.missingFishName}</Text>
       <Text style={styles.panelBody}>{new Date(item.occurredAt).toLocaleDateString()} · {item.note}</Text>
@@ -124,7 +131,7 @@ function History({ tank, onResolveMissing }: { tank: Tank; onResolveMissing: Res
     {error ? <Text>{error}</Text> : null}
     <Text style={styles.panelBody}>All recorded water tests, newest first.</Text>
     {readings.length === 0 ? <Empty title="No water history yet" body="Connect a physical sensor or record a manual test. VELYQUA will never fill this chart with made-up readings." /> : readings.map(item => <Panel key={item.id}><View style={styles.between}><View><Text style={styles.panelTitle}>{item.parameter.replaceAll('_', ' ')}</Text><Text style={styles.panelBody}>{new Date(item.observedAt).toLocaleString()} · {item.method} · {sampleSourceLabel(item.sampleSource)}</Text></View><Text style={styles.historyValue}>{item.value} {item.unit}</Text></View></Panel>)}
-    <Text style={styles.sectionTitle}>Care timeline</Text>{[...tank.activities].sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt)).map(item => <View key={item.id} style={styles.timeline}><View style={styles.timelineDot} /><View style={styles.grow}><Text style={styles.timelineTitle}>{item.type.replaceAll('_', ' ')}</Text><Text style={styles.timelineBody}>{item.missingFishName ? item.missingFishName + ' · ' : ''}{item.bodyCondition ? `${item.bodyCondition.subject} · ${item.bodyCondition.status} · ${item.bodyCondition.date}` : ''}{item.bodyCondition ? ' · ' : ''}{item.note ?? 'No note'}{item.type === 'uncertain_nitrite' ? ' · ' + sampleSourceLabel(item.sampleSource) : ''} · {new Date(item.occurredAt).toLocaleDateString()}</Text></View></View>)}
+    <Text style={styles.sectionTitle}>Care timeline</Text>{[...tank.activities].sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt)).map(item => <View key={item.id} style={styles.timeline}><View style={styles.timelineDot} /><View style={styles.grow}><Text style={styles.timelineTitle}>{item.type.replaceAll('_', ' ')}</Text><Text style={styles.timelineBody}>{item.breathing ? `${item.breathing.subject} · ${item.breathing.behavior} · ${item.breathing.active ? 'ongoing at observation' : 'no longer happening'} · ${new Date(item.occurredAt).toLocaleTimeString()} · ` : ''}{item.missingFishName ? item.missingFishName + ' · ' : ''}{item.bodyCondition ? `${item.bodyCondition.subject} · ${item.bodyCondition.status} · ${item.bodyCondition.date}` : ''}{item.bodyCondition ? ' · ' : ''}{item.note ?? 'No note'}{item.type === 'uncertain_nitrite' ? ' · ' + sampleSourceLabel(item.sampleSource) : ''} · {new Date(item.occurredAt).toLocaleDateString()}</Text></View></View>)}
   </>;
 }
 

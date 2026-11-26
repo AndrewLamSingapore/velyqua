@@ -128,9 +128,52 @@ def verify_sample_source(browser, url):
     context.close()
 
 
+def verify_breathing(browser, url):
+    context = browser.new_context()
+    page = context.new_page()
+    page.goto(url)
+    def start():
+        page.get_by_role("button", name="Record an observation").click()
+    def save():
+        page.get_by_text("Save update", exact=True).click()
+        expect(page.get_by_text("Quick Update", exact=True)).to_be_hidden()
+    def water(parameter, value):
+        start()
+        page.get_by_text(parameter, exact=True).last.click()
+        page.get_by_label("Water test value").fill(value)
+        save()
+    water("ammonia", "0")
+    water("nitrite", "0")
+    water("nitrate", "10")
+    expect(page.get_by_text("ALL CLEAR", exact=True).first).to_be_visible()
+    start()
+    page.get_by_text("Care or note", exact=True).click()
+    page.get_by_text("breathing observation", exact=True).last.click()
+    page.get_by_label("Affected fish or group").fill("QA tetras")
+    expect(page.get_by_role("checkbox", name="Still happening")).to_be_checked()
+    save()
+    reason = "You reported gasping in QA tetras and marked it as ongoing."
+    expect(page.get_by_text(reason, exact=True).first).to_be_visible()
+    page.close()
+    page = context.new_page()
+    page.goto(url)
+    expect(page.get_by_text(reason, exact=True).first).to_be_visible()
+    water("nitrite", "0")
+    expect(page.get_by_text(reason, exact=True).first).to_be_visible()
+    water("ammonia", "0.2")
+    page.get_by_role("button", name="Review breathing observations").click()
+    page.get_by_role("button", name="Mark breathing resolved for QA tetras").click()
+    expect(page.get_by_text("Keeper marked the behavior resolved", exact=False)).to_be_visible()
+    expect(page.get_by_text("ongoing at observation", exact=False)).to_be_visible()
+    page.get_by_role("tab", name="Home").click()
+    expect(page.get_by_text("Ammonia is above zero in a confirmed recent test.", exact=True).first).to_be_visible()
+    context.close()
+
+
 if __name__ == "__main__":
     with sync_playwright() as playwright:
         with playwright.chromium.launch() as browser:
             verify(browser, sys.argv[1])
             verify_missing_fish(browser, sys.argv[1])
             verify_sample_source(browser, sys.argv[1])
+            verify_breathing(browser, sys.argv[1])
