@@ -84,7 +84,7 @@ const parameterLimits: Record<WaterParameter, [number, number]> = {
 };
 const activityTypes: Activity['type'][] = [
   'observation', 'water_change', 'feeding', 'maintenance', 'dosing', 'filter_service',
-  'cleaning', 'plant_care', 'livestock_observation', 'breeding_observation', 'equipment_service', 'treatment'
+  'cleaning', 'plant_care', 'livestock_loss', 'livestock_observation', 'breeding_observation', 'equipment_service', 'treatment'
 ];
 const syncLabels: Record<SyncState, string> = {
   local: 'Saved locally · waiting to sync',
@@ -367,6 +367,10 @@ function Library() {
 function QuickUpdate({ tank, onClose, onSave }: { tank: Tank; onClose: () => void; onSave: (tank: Tank) => Promise<void> }) {
   const [mode, setMode] = useState<'water' | 'activity'>('water');
   const [parameter, setParameter] = useState<WaterParameter>('nitrate');
+  const today = new Date();
+  const localDate = (date: Date) => [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+  const [lossDate, setLossDate] = useState(() => localDate(today));
+  const [dateError, setDateError] = useState('');
   const [activityType, setActivityType] = useState<Activity['type']>('observation');
   const [value, setValue] = useState('');
   const [note, setNote] = useState('');
@@ -391,10 +395,15 @@ function QuickUpdate({ tank, onClose, onSave }: { tank: Tank; onClose: () => voi
           Alert.alert('Add a valid percentage', 'Use a number above 0 and no more than 100.');
           return;
         }
+        const lossDay = new Date(lossDate + 'T12:00:00');
+        if (activityType === 'livestock_loss' && (localDate(lossDay) !== lossDate || lossDate > localDate(new Date()))) {
+          setDateError('Enter a valid loss date through today (YYYY-MM-DD).');
+          return;
+        }
         const activity: Activity = {
           id: makeId('activity'),
           type: activityType,
-          occurredAt: now,
+          occurredAt: activityType === 'livestock_loss' && lossDate !== localDate(new Date()) ? lossDay.toISOString() : now,
           updatedAt: now,
           note: note.trim() || `Owner logged ${activityType.replaceAll('_', ' ')}`,
           percentage: waterChangePercentage
@@ -410,7 +419,7 @@ function QuickUpdate({ tank, onClose, onSave }: { tank: Tank; onClose: () => voi
   };
   return <View style={styles.overlay}><View style={styles.sheet}><View style={styles.sheetHead}><Text style={styles.cardTitle}>Quick Update</Text><Pressable onPress={onClose} accessibilityLabel="Close quick update"><Text style={styles.close}>×</Text></Pressable></View>
     <View style={styles.choiceRow}><Pressable onPress={() => setMode('water')} style={[styles.choice, mode === 'water' && styles.choiceActive]}><Text style={mode === 'water' ? styles.choiceActiveText : styles.choiceText}>Water test</Text></Pressable><Pressable onPress={() => setMode('activity')} style={[styles.choice, mode === 'activity' && styles.choiceActive]}><Text style={mode === 'activity' ? styles.choiceActiveText : styles.choiceText}>Care or note</Text></Pressable></View>
-    {mode === 'water' ? <><ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.paramRow}>{waterParameters.map((item) => <Pressable key={item} onPress={() => setParameter(item)} style={[styles.param, parameter === item && styles.paramActive]}><Text style={parameter === item ? styles.paramActiveText : styles.choiceText}>{item.replaceAll('_', ' ')}</Text></Pressable>)}</ScrollView><TextInput accessibilityLabel="Water test value" value={value} onChangeText={setValue} keyboardType="decimal-pad" placeholder={`Value in ${parameterUnits[parameter]}`} style={styles.input} /></> : <><ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.paramRow}>{activityTypes.map((item) => <Pressable key={item} onPress={() => setActivityType(item)} style={[styles.param, activityType === item && styles.paramActive]}><Text style={activityType === item ? styles.paramActiveText : styles.choiceText}>{item.replaceAll('_', ' ')}</Text></Pressable>)}</ScrollView>{activityType === 'water_change' && <TextInput accessibilityLabel="Water change percentage" value={percentage} onChangeText={setPercentage} keyboardType="decimal-pad" placeholder="Percentage changed (optional)" style={styles.input} />}<TextInput accessibilityLabel="Care or observation note" value={note} onChangeText={setNote} placeholder="What happened?" multiline style={[styles.input, styles.noteInput]} /></>}
+    {mode === 'water' ? <><ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.paramRow}>{waterParameters.map((item) => <Pressable key={item} onPress={() => setParameter(item)} style={[styles.param, parameter === item && styles.paramActive]}><Text style={parameter === item ? styles.paramActiveText : styles.choiceText}>{item.replaceAll('_', ' ')}</Text></Pressable>)}</ScrollView><TextInput accessibilityLabel="Water test value" value={value} onChangeText={setValue} keyboardType="decimal-pad" placeholder={`Value in ${parameterUnits[parameter]}`} style={styles.input} /></> : <><ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.paramRow}>{activityTypes.map((item) => <Pressable key={item} onPress={() => setActivityType(item)} style={[styles.param, activityType === item && styles.paramActive]}><Text style={activityType === item ? styles.paramActiveText : styles.choiceText}>{item.replaceAll('_', ' ')}</Text></Pressable>)}</ScrollView>{activityType === 'livestock_loss' && <><Text>Loss date (YYYY-MM-DD)</Text><TextInput accessibilityLabel="Loss date" value={lossDate} onChangeText={text => { setLossDate(text); setDateError(''); }} style={styles.input} />{dateError ? <Text>{dateError}</Text> : null}</>}{activityType === 'water_change' && <TextInput accessibilityLabel="Water change percentage" value={percentage} onChangeText={setPercentage} keyboardType="decimal-pad" placeholder="Percentage changed (optional)" style={styles.input} />}<TextInput accessibilityLabel="Care or observation note" value={note} onChangeText={setNote} placeholder="What happened?" multiline style={[styles.input, styles.noteInput]} /></>}
     <Button label={busy ? 'Saving safely…' : 'Save update'} onPress={submit} disabled={busy} /><Button label="Cancel" onPress={onClose} secondary disabled={busy} />
   </View></View>;
 }

@@ -32,6 +32,19 @@ export function evaluateTank(tank: Tank): Recommendation {
     });
   }
 
+  const lossDays = new Set(tank.activities
+    .filter(activity => activity.type === 'livestock_loss' && ageHours(activity.occurredAt) >= 0 && ageHours(activity.occurredAt) <= 30 * 24)
+    .map(activity => new Date(activity.occurredAt).toDateString()));
+  if (lossDays.size >= 2) {
+    return result('needs_attention', {
+      title: 'Repeated livestock losses need attention',
+      reason: 'You recorded livestock losses on separate dates in the past 30 days.',
+      action: 'Review the dated observations and check the remaining livestock.',
+      confidence: 'partial', estimatedMinutes: 5,
+      evidence: ['Keeper-recorded livestock losses'], showLossHistory: true
+    });
+  }
+
   if (!ammonia || !nitrite || !nitrate) {
     return result('more_information_needed', {
       title: 'One water test will make this clearer',

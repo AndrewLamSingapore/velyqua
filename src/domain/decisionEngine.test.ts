@@ -12,6 +12,19 @@ const safeReadings: [Reading, Reading, Reading] = [
 const safeTank: Tank = { ...sampleTank, sourceWaterNitrate: 5, readings: safeReadings };
 
 describe('VELYQUA decision engine', () => {
+  it('surfaces repeated losses with otherwise clear water and preserves water-hazard priority', () => {
+    const activities: Tank['activities'] = [24, 48].map(hours => ({
+      id: String(hours), type: 'livestock_loss', occurredAt: hoursAgo(hours)
+    }));
+    const tank = { ...safeTank, activities };
+    expect(evaluateTank(tank)).toMatchObject({ state: 'needs_attention', showLossHistory: true });
+    expect(evaluateTank({ ...tank, readings: [] }).showLossHistory).toBe(true);
+    expect(evaluateTank({ ...tank, readings: [{ ...safeReadings[1], value: 0.37 }] }).reason).toContain('Nitrite');
+    expect(evaluateTank({ ...tank, activities: activities.map(a => ({ ...a, type: 'observation' })) }).state).toBe('all_clear');
+    expect(evaluateTank({ ...tank, activities: activities.map(a => ({ ...a, occurredAt: hoursAgo(24) })) }).state).toBe('all_clear');
+    expect(evaluateTank({ ...tank, activities: activities.map(a => ({ ...a, occurredAt: hoursAgo(800) })) }).state).toBe('all_clear');
+  });
+
   it('flags fresh positive nitrite before requesting missing tests', () => {
     const reading = { ...safeReadings[1], value: 0.37 };
     const recommendation = evaluateTank({ ...safeTank, readings: [reading] });
