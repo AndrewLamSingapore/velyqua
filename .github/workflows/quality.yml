@@ -24,6 +24,25 @@ jobs:
       - run: npm run verify
       - run: npm run export:ios
 
+  warning-handoff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: python3 -m venv "$RUNNER_TEMP/browser-test" && "$RUNNER_TEMP/browser-test/bin/pip" install playwright==1.62.0
+      - run: '"$RUNNER_TEMP/browser-test/bin/playwright" install --with-deps chromium'
+      - name: Test warning priority and guest persistence
+        run: |
+          python3 -m http.server 8080 --bind 127.0.0.1 --directory dist &
+          trap 'kill $!' EXIT
+          curl --retry 10 --retry-connrefused --retry-delay 1 -fsS http://127.0.0.1:8080/ -o /dev/null
+          "$RUNNER_TEMP/browser-test/bin/python" scripts/warning-handoff.py http://127.0.0.1:8080/
+
   production-smoke:
     if: github.event_name != 'pull_request'
     needs: verify
