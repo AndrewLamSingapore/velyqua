@@ -1,8 +1,8 @@
-> Portfolio status: [STATUS.md](https://github.com/AndrewLamSingapore/orqevia/blob/main/STATUS.md) is the sole portfolio status reference. Each product owns its source, configuration, contracts and domain records. The [operational manifest](https://github.com/AndrewLamSingapore/orqevia/blob/main/governance/operational-manifest.json) provides dated ORQEVIA component and observation references; it does not establish deployment status.
+> Current ORQEVIA source: [ORQEVIA-CURRENT-STATE.md](https://github.com/AndrewLamSingapore/orqevia/blob/main/ORQEVIA-CURRENT-STATE.md), reached through the portfolio pointer [STATUS.md](https://github.com/AndrewLamSingapore/orqevia/blob/main/STATUS.md). Each product owns its source, configuration, contracts and domain records. The [operational manifest](https://github.com/AndrewLamSingapore/orqevia/blob/main/governance/operational-manifest.json) is a dated historical reference. Source, CI, deployment and runtime acceptance are separate evidence.
 
 # VELYQUA Product Documentation
 
-This directory contains the active, reviewable product definition for VELYQUA. Portfolio status authority is [STATUS.md](https://github.com/AndrewLamSingapore/orqevia/blob/main/STATUS.md); VELYQUA domain requirements are in the [Product Specification](PRODUCT_SPECIFICATION.md) and controlled decisions.
+This directory contains the active, reviewable product definition for VELYQUA. Portfolio source context is reached through [STATUS.md](https://github.com/AndrewLamSingapore/orqevia/blob/main/STATUS.md); VELYQUA domain requirements are in the [Product Specification](PRODUCT_SPECIFICATION.md) and controlled decisions.
 
 The 12 August 2026 VELYQUA 2.0 blueprint established the baseline. It no longer independently overrides GitHub; stable decisions and subsequent approved changes are governed here.
 
@@ -26,7 +26,7 @@ The 12 August 2026 VELYQUA 2.0 blueprint established the baseline. It no longer 
 
 Documentation contains normative truth. `src/os/capabilities.ts` contains machine-readable delivery/status truth. Code/tests are implementation evidence. External PDFs, chats, investor plans and collaborator messages are inputs until promoted through controlled change.
 
-For current portfolio status, follow PRIME STATUS.md. For VELYQUA domain requirements, reconcile the Product Specification and controlled decisions. A Decision Log entry alone is not full normalization: every affected normative document, capability and required test must be brought into agreement.
+For ORQEVIA source context, follow the STATUS.md pointer to ORQEVIA-CURRENT-STATE.md; historical portfolio records do not establish current deployment. For VELYQUA domain requirements, reconcile the Product Specification and controlled decisions. A Decision Log entry alone is not full normalization: every affected normative document, capability and required test must be brought into agreement.
 
 ## Change control
 
