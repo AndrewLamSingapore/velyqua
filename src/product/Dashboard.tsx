@@ -99,12 +99,31 @@ function Live({ tank }: { tank: Tank }) {
   </>;
 }
 
-function History({ tank }: { tank: Tank }) {
+type ResolveMissing = (id: string, outcome: 'fish_found' | 'livestock_loss') => Promise<void>;
+
+function History({ tank, onResolveMissing }: { tank: Tank; onResolveMissing: ResolveMissing }) {
+  const [error, setError] = useState('');
+  const resolved = new Set(tank.activities.filter(item => item.type === 'fish_found' || item.type === 'livestock_loss').map(item => item.relatedRecordId));
+  const openCases = tank.activities.filter(item => item.type === 'fish_missing' && !resolved.has(item.id));
+  const resolve = async (id: string, outcome: 'fish_found' | 'livestock_loss') => {
+    try { setError(''); await onResolveMissing(id, outcome); }
+    catch { setError('Could not save the outcome. Please try again.'); }
+  };
   const readings = [...tank.readings].sort((a, b) => Date.parse(b.observedAt) - Date.parse(a.observedAt));
   return <><Text style={styles.kicker}>HISTORY</Text><Text accessibilityRole="header" style={styles.hero}>A record you can trust.</Text><Text style={styles.subhero}>Only owner observations and admitted physical telemetry belong here.</Text>
+    {openCases.map(item => <Panel key={item.id}>
+      <Text style={styles.panelTitle}>Missing: {item.missingFishName}</Text>
+      <Text style={styles.panelBody}>{new Date(item.occurredAt).toLocaleDateString()} · {item.note}</Text>
+      {(['fish_found', 'livestock_loss'] as const).map(outcome => {
+        const label = outcome === 'fish_found' ? 'Mark found' : 'Confirm loss';
+        return <Pressable key={outcome} accessibilityRole="button" accessibilityLabel={label + ' for ' + item.missingFishName}
+          onPress={() => resolve(item.id, outcome)} style={styles.lightButton}><Text style={styles.lightButtonText}>{label}</Text></Pressable>;
+      })}
+    </Panel>)}
+    {error ? <Text>{error}</Text> : null}
     <Text style={styles.panelBody}>All recorded water tests, newest first.</Text>
     {readings.length === 0 ? <Empty title="No water history yet" body="Connect a physical sensor or record a manual test. VELYQUA will never fill this chart with made-up readings." /> : readings.map(item => <Panel key={item.id}><View style={styles.between}><View><Text style={styles.panelTitle}>{item.parameter.replaceAll('_', ' ')}</Text><Text style={styles.panelBody}>{new Date(item.observedAt).toLocaleString()} · {item.method}</Text></View><Text style={styles.historyValue}>{item.value} {item.unit}</Text></View></Panel>)}
-    <Text style={styles.sectionTitle}>Care timeline</Text>{[...tank.activities].sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt)).map(item => <View key={item.id} style={styles.timeline}><View style={styles.timelineDot} /><View style={styles.grow}><Text style={styles.timelineTitle}>{item.type.replaceAll('_', ' ')}</Text><Text style={styles.timelineBody}>{item.bodyCondition ? `${item.bodyCondition.subject} · ${item.bodyCondition.status} · ${item.bodyCondition.date}` : ''}{item.bodyCondition ? ' · ' : ''}{item.note ?? 'No note'} · {new Date(item.occurredAt).toLocaleDateString()}</Text></View></View>)}
+    <Text style={styles.sectionTitle}>Care timeline</Text>{[...tank.activities].sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt)).map(item => <View key={item.id} style={styles.timeline}><View style={styles.timelineDot} /><View style={styles.grow}><Text style={styles.timelineTitle}>{item.type.replaceAll('_', ' ')}</Text><Text style={styles.timelineBody}>{item.missingFishName ? item.missingFishName + ' · ' : ''}{item.bodyCondition ? `${item.bodyCondition.subject} · ${item.bodyCondition.status} · ${item.bodyCondition.date}` : ''}{item.bodyCondition ? ' · ' : ''}{item.note ?? 'No note'} · {new Date(item.occurredAt).toLocaleDateString()}</Text></View></View>)}
   </>;
 }
 
@@ -128,11 +147,11 @@ function System({ syncLabel }: { syncLabel: string }) {
   </>;
 }
 
-export function ProductDashboard({ tank, syncLabel, publicAccess, onQuickUpdate, onAccount }: { tank: Tank; syncLabel: string; publicAccess: boolean; onQuickUpdate: () => void; onAccount: () => void }) {
+export function ProductDashboard({ tank, syncLabel, publicAccess, onQuickUpdate, onAccount, onResolveMissing }: { tank: Tank; syncLabel: string; publicAccess: boolean; onResolveMissing: ResolveMissing; onQuickUpdate: () => void; onAccount: () => void }) {
   const [screen, setScreen] = useState<Screen>('home');
   const { width } = useWindowDimensions();
   const desktop = width >= 880;
-  const content = screen === 'home' ? <Home onHistory={() => setScreen('history')} tank={tank} onQuickUpdate={onQuickUpdate} publicAccess={publicAccess} /> : screen === 'live' ? <Live tank={tank} /> : screen === 'history' ? <History tank={tank} /> : screen === 'alerts' ? <Alerts /> : screen === 'people' ? <People /> : <System syncLabel={syncLabel} />;
+  const content = screen === 'home' ? <Home onHistory={() => setScreen('history')} tank={tank} onQuickUpdate={onQuickUpdate} publicAccess={publicAccess} /> : screen === 'live' ? <Live tank={tank} /> : screen === 'history' ? <History tank={tank} onResolveMissing={onResolveMissing} /> : screen === 'alerts' ? <Alerts /> : screen === 'people' ? <People /> : <System syncLabel={syncLabel} />;
   return <View style={[styles.shell, desktop && styles.shellDesktop]}>
     <View style={[styles.sidebar, !desktop && styles.sidebarMobile]}>
       <View style={styles.brandBlock}><View style={styles.brandMark}><Text style={styles.brandMarkText}>V</Text></View>{desktop && <View><Text style={styles.brand}>VELYQUA</Text><Text style={styles.brandLine}>LIVING WATER</Text></View>}</View>

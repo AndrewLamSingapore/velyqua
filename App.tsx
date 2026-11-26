@@ -84,7 +84,7 @@ const parameterLimits: Record<WaterParameter, [number, number]> = {
 };
 const activityTypes: Activity['type'][] = [
   'observation', 'water_change', 'feeding', 'maintenance', 'dosing', 'filter_service',
-  'cleaning', 'plant_care', 'body_condition', 'livestock_loss', 'livestock_observation', 'breeding_observation', 'equipment_service', 'treatment'
+  'cleaning', 'plant_care', 'fish_missing', 'body_condition', 'livestock_loss', 'livestock_observation', 'breeding_observation', 'equipment_service', 'treatment'
 ];
 const syncLabels: Record<SyncState, string> = {
   local: 'Saved locally · waiting to sync',
@@ -278,6 +278,7 @@ function TankApp({ session, publicAccess = false }: { session?: Session; publicA
     };
   }, [client, publicAccess, session, sync]);
 
+  const resolvingMissing = useRef(false);
   const updateTank = async (tank: Tank) => {
     if (!recordRef.current) return;
     const next = markTankChanged(recordRef.current, tank);
@@ -286,6 +287,22 @@ function TankApp({ session, publicAccess = false }: { session?: Session; publicA
     setRecord(next);
     setSyncState('local');
     if (!publicAccess) void sync();
+  };
+
+  const resolveMissing = async (id: string, outcome: 'fish_found' | 'livestock_loss') => {
+    const current = recordRef.current?.tank;
+    const reported = current?.activities.find(item => item.type === 'fish_missing' && item.id === id);
+    if (!current || !reported || resolvingMissing.current || current.activities.some(item => item.id === 'resolution-' + id)) return;
+    resolvingMissing.current = true;
+    try {
+      const now = new Date().toISOString();
+      const event: Activity = { id: 'resolution-' + id, type: outcome, relatedRecordId: id,
+        missingFishName: reported.missingFishName, occurredAt: now, updatedAt: now,
+        note: outcome === 'fish_found' ? 'Reported missing fish found' : 'Loss confirmed by keeper' };
+      await updateTank({ ...current, activities: [event, ...current.activities] });
+    } finally {
+      resolvingMissing.current = false;
+    }
   };
 
   if (loadError) {
@@ -301,7 +318,7 @@ function TankApp({ session, publicAccess = false }: { session?: Session; publicA
 
   return <SafeAreaView style={styles.safe}>
     <StatusBar style="dark" />
-    <ProductDashboard tank={tank} syncLabel={statusLabel} publicAccess={publicAccess} onQuickUpdate={() => setQuick(true)} onAccount={() => { if (!publicAccess) setAccount(true); }} />
+    <ProductDashboard onResolveMissing={resolveMissing} tank={tank} syncLabel={statusLabel} publicAccess={publicAccess} onQuickUpdate={() => setQuick(true)} onAccount={() => { if (!publicAccess) setAccount(true); }} />
     {quick && <QuickUpdate tank={tank} onClose={() => setQuick(false)} onSave={updateTank} />}
     {account && client && session && <AccountSheet client={client} session={session} syncLabel={statusLabel} onClose={() => setAccount(false)} onSync={sync} />}
   </SafeAreaView>;
@@ -401,8 +418,8 @@ function QuickUpdate({ tank, onClose, onSave }: { tank: Tank; onClose: () => voi
           Alert.alert('Add a valid percentage', 'Use a number above 0 and no more than 100.');
           return;
         }
-        const dated = activityType === 'livestock_loss' || activityType === 'body_condition';
-        if (activityType === 'body_condition' && !subject.trim()) {
+        const dated = activityType === 'fish_missing' || activityType === 'livestock_loss' || activityType === 'body_condition';
+        if ((activityType === 'fish_missing' || activityType === 'body_condition') && !subject.trim()) {
           setDateError('Enter the fish or group identifier.');
           return;
         }
@@ -414,6 +431,7 @@ function QuickUpdate({ tank, onClose, onSave }: { tank: Tank; onClose: () => voi
         const activity: Activity = {
           id: makeId('activity'),
           type: activityType,
+          ...(activityType === 'fish_missing' ? { missingFishName: subject.trim() } : {}),
           ...(activityType === 'body_condition' ? { bodyCondition: { subject: subject.trim(), status: condition, date: lossDate } } : {}),
           occurredAt: dated && lossDate !== localDate(new Date()) ? lossDay.toISOString() : now,
           updatedAt: now,
@@ -431,7 +449,7 @@ function QuickUpdate({ tank, onClose, onSave }: { tank: Tank; onClose: () => voi
   };
   return <View style={styles.overlay}><View style={styles.sheet}><View style={styles.sheetHead}><Text style={styles.cardTitle}>Quick Update</Text><Pressable onPress={onClose} accessibilityLabel="Close quick update"><Text style={styles.close}>×</Text></Pressable></View>
     <View style={styles.choiceRow}><Pressable onPress={() => setMode('water')} style={[styles.choice, mode === 'water' && styles.choiceActive]}><Text style={mode === 'water' ? styles.choiceActiveText : styles.choiceText}>Water test</Text></Pressable><Pressable onPress={() => setMode('activity')} style={[styles.choice, mode === 'activity' && styles.choiceActive]}><Text style={mode === 'activity' ? styles.choiceActiveText : styles.choiceText}>Care or note</Text></Pressable></View>
-    {mode === 'water' ? <><ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.paramRow}>{waterParameters.map((item) => <Pressable key={item} onPress={() => { setParameter(item); setUncertain(false); }} style={[styles.param, parameter === item && styles.paramActive]}><Text style={parameter === item ? styles.paramActiveText : styles.choiceText}>{item.replaceAll('_', ' ')}</Text></Pressable>)}</ScrollView>{parameter === 'nitrite' && <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: uncertain }} onPress={() => setUncertain(!uncertain)} style={[styles.choice, uncertain && styles.choiceActive]}><Text style={uncertain ? styles.choiceActiveText : styles.choiceText}>I can’t tell</Text></Pressable>}{!uncertain && <TextInput accessibilityLabel="Water test value" value={value} onChangeText={setValue} keyboardType="decimal-pad" placeholder={`Value in ${parameterUnits[parameter]}`} style={styles.input} />}</> : <><ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.paramRow}>{activityTypes.map((item) => <Pressable key={item} onPress={() => setActivityType(item)} style={[styles.param, activityType === item && styles.paramActive]}><Text style={activityType === item ? styles.paramActiveText : styles.choiceText}>{item.replaceAll('_', ' ')}</Text></Pressable>)}</ScrollView>{activityType === 'body_condition' && <><Text>Fish or group identifier</Text><TextInput accessibilityLabel="Fish or group identifier" value={subject} onChangeText={setSubject} style={styles.input} /><View style={styles.choiceRow}>{(['stable', 'improving', 'worsening'] as const).map(status => <Pressable key={status} accessibilityRole="radio" accessibilityState={{ checked: condition === status }} onPress={() => setCondition(status)} style={[styles.choice, condition === status && styles.choiceActive]}><Text style={condition === status ? styles.choiceActiveText : styles.choiceText}>{status}</Text></Pressable>)}</View></>}{(activityType === 'livestock_loss' || activityType === 'body_condition') && <><Text>{activityType === 'livestock_loss' ? 'Loss date' : 'Observation date'} (YYYY-MM-DD)</Text><TextInput accessibilityLabel={activityType === 'livestock_loss' ? 'Loss date' : 'Observation date'} value={lossDate} onChangeText={text => { setLossDate(text); setDateError(''); }} style={styles.input} />{dateError ? <Text>{dateError}</Text> : null}</>}{activityType === 'water_change' && <TextInput accessibilityLabel="Water change percentage" value={percentage} onChangeText={setPercentage} keyboardType="decimal-pad" placeholder="Percentage changed (optional)" style={styles.input} />}<TextInput accessibilityLabel="Care or observation note" value={note} onChangeText={setNote} placeholder="What happened?" multiline style={[styles.input, styles.noteInput]} /></>}
+    {mode === 'water' ? <><ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.paramRow}>{waterParameters.map((item) => <Pressable key={item} onPress={() => { setParameter(item); setUncertain(false); }} style={[styles.param, parameter === item && styles.paramActive]}><Text style={parameter === item ? styles.paramActiveText : styles.choiceText}>{item.replaceAll('_', ' ')}</Text></Pressable>)}</ScrollView>{parameter === 'nitrite' && <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: uncertain }} onPress={() => setUncertain(!uncertain)} style={[styles.choice, uncertain && styles.choiceActive]}><Text style={uncertain ? styles.choiceActiveText : styles.choiceText}>I can’t tell</Text></Pressable>}{!uncertain && <TextInput accessibilityLabel="Water test value" value={value} onChangeText={setValue} keyboardType="decimal-pad" placeholder={`Value in ${parameterUnits[parameter]}`} style={styles.input} />}</> : <><ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.paramRow}>{activityTypes.map((item) => <Pressable key={item} onPress={() => setActivityType(item)} style={[styles.param, activityType === item && styles.paramActive]}><Text style={activityType === item ? styles.paramActiveText : styles.choiceText}>{item.replaceAll('_', ' ')}</Text></Pressable>)}</ScrollView>{activityType === 'fish_missing' && <><Text>Fish identifier</Text><TextInput accessibilityLabel="Fish identifier" value={subject} onChangeText={setSubject} style={styles.input} /></>}{activityType === 'body_condition' && <><Text>Fish or group identifier</Text><TextInput accessibilityLabel="Fish or group identifier" value={subject} onChangeText={setSubject} style={styles.input} /><View style={styles.choiceRow}>{(['stable', 'improving', 'worsening'] as const).map(status => <Pressable key={status} accessibilityRole="radio" accessibilityState={{ checked: condition === status }} onPress={() => setCondition(status)} style={[styles.choice, condition === status && styles.choiceActive]}><Text style={condition === status ? styles.choiceActiveText : styles.choiceText}>{status}</Text></Pressable>)}</View></>}{(activityType === 'fish_missing' || activityType === 'livestock_loss' || activityType === 'body_condition') && <><Text>{activityType === 'livestock_loss' ? 'Loss date' : 'Observation date'} (YYYY-MM-DD)</Text><TextInput accessibilityLabel={activityType === 'livestock_loss' ? 'Loss date' : 'Observation date'} value={lossDate} onChangeText={text => { setLossDate(text); setDateError(''); }} style={styles.input} />{dateError ? <Text>{dateError}</Text> : null}</>}{activityType === 'water_change' && <TextInput accessibilityLabel="Water change percentage" value={percentage} onChangeText={setPercentage} keyboardType="decimal-pad" placeholder="Percentage changed (optional)" style={styles.input} />}<TextInput accessibilityLabel="Care or observation note" value={note} onChangeText={setNote} placeholder="What happened?" multiline style={[styles.input, styles.noteInput]} /></>}
     <Button label={busy ? 'Saving safely…' : 'Save update'} onPress={submit} disabled={busy} /><Button label="Cancel" onPress={onClose} secondary disabled={busy} />
   </View></View>;
 }

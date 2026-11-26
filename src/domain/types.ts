@@ -44,6 +44,8 @@ export type Activity = {
     | 'plant_care'
     | 'livestock_observation'
     | 'livestock_loss'
+    | 'fish_missing'
+    | 'fish_found'
     | 'body_condition'
     | 'uncertain_nitrite'
     | 'breeding_observation'
@@ -53,6 +55,7 @@ export type Activity = {
   note?: string;
   percentage?: number;
   bodyCondition?: { subject: string; status: 'stable' | 'improving' | 'worsening'; date: string };
+  missingFishName?: string;
   relatedRecordId?: string;
   updatedAt?: string;
 };
