@@ -53,7 +53,7 @@ function Home({ tank, onQuickUpdate, publicAccess, onHistory }: { onHistory: () 
   const recommendation = useMemo(() => evaluateTank(tank), [tank]);
   const latest = [...tank.readings].sort((a, b) => Date.parse(b.observedAt) - Date.parse(a.observedAt))[0];
   const state = recommendation.state;
-  const showRecommendation = tank.readings.length > 0 || recommendation.showLossHistory;
+  const showRecommendation = tank.readings.length > 0 || recommendation.showLossHistory || recommendation.nitriteRetest;
   return <>
     <View style={styles.heroRow}>
       <View style={styles.heroCopy}><Text style={styles.kicker}>INTELLIGENCE FOR LIVING WATER</Text><Text accessibilityRole="header" style={styles.hero}>Understand your water. Remember every change.</Text><Text style={styles.subhero}>Water tests, keeper observations and care history in one place. Start with what you can observe, then follow what changes over time.</Text></View>
@@ -62,6 +62,7 @@ function Home({ tank, onQuickUpdate, publicAccess, onHistory }: { onHistory: () 
       <View style={styles.between}><View style={styles.grow}><Text style={styles.darkKicker}>RIGHT NOW</Text><Text style={styles.darkTitle}>{showRecommendation ? recommendation.title : 'Start with a water test or observation'}</Text><Text style={styles.darkBody}>{showRecommendation ? recommendation.reason : 'Record a manual test, note what you see and build a useful history. Missing measurements remain visible.'}</Text></View><Pill tone={state === 'all_clear' ? 'good' : 'warn'}>{state === 'all_clear' ? 'ALL CLEAR' : state === 'needs_attention' ? 'NEEDS ATTENTION' : 'MORE INFORMATION'}</Pill></View>
       <View style={styles.dividerDark} />
       <Text style={styles.darkAction}>{showRecommendation ? recommendation.action : 'Add a manual water test or record a care action.'}</Text>
+      {recommendation.nitriteRetest && <Text style={styles.darkBody}>{recommendation.nitriteRetest}</Text>}
       {recommendation.showLossHistory && <Pressable accessibilityRole="button" onPress={onHistory} style={styles.lightButton}><Text style={styles.lightButtonText}>View loss history</Text></Pressable>}
       <Pressable accessibilityRole="button" style={styles.lightButton} onPress={onQuickUpdate}><Text style={styles.lightButtonText}>Record an observation</Text></Pressable>
     </Panel>
