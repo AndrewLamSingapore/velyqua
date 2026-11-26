@@ -170,6 +170,44 @@ def verify_breathing(browser, url):
     context.close()
 
 
+def verify_ammonia_retest(browser, url):
+    import re
+    context = browser.new_context()
+    page = context.new_page()
+    page.goto(url)
+    def ammonia(value, source="Tank"):
+        page.get_by_role("button", name="Record an observation").click()
+        page.get_by_role("radio", name=source, exact=True).click()
+        page.get_by_text("ammonia", exact=True).last.click()
+        if value is None:
+            page.get_by_role("checkbox", name="I can’t tell").click()
+        else:
+            page.get_by_label("Water test value").fill(value)
+        page.get_by_text("Save update", exact=True).click()
+        expect(page.get_by_text("Quick Update", exact=True)).to_be_hidden()
+    ammonia("0")
+    ammonia(None)
+    ammonia("0", "Tap water")
+    page.close()
+    page = context.new_page()
+    page.goto(url)
+    expect(page.get_by_text("Retest needed", exact=True).first).to_be_visible()
+    expect(page.get_by_text("Last confirmed ammonia: 0 mg/L", exact=False)).to_be_visible()
+    ammonia("0.25")
+    expect(page.get_by_text("Retest needed", exact=True)).to_have_count(0)
+    expect(page.get_by_text("Ammonia is above zero in a confirmed recent test.", exact=True).first).to_be_visible()
+    page.get_by_role("tab", name="History").click()
+    history = page.locator("body")
+    for source, value in [("Tank", "0"), ("Tap water", "0"), ("Tank", "0.25")]:
+        expect(history).to_contain_text(re.compile(r"ammonia\s+[^\n]*manual entry · " + source + r"\s+" + re.escape(value) + r" mg/L", re.I), use_inner_text=True)
+    expect(page.get_by_text("Uncertain ammonia test · Tank", exact=False)).to_be_visible()
+    page.get_by_role("tab", name="Home").click()
+    ammonia(None)
+    expect(page.get_by_text("Ammonia is above zero in a confirmed recent test.", exact=True).first).to_be_visible()
+    expect(page.get_by_text("Retest needed for ammonia.", exact=False).first).to_be_visible()
+    context.close()
+
+
 if __name__ == "__main__":
     with sync_playwright() as playwright:
         with playwright.chromium.launch() as browser:
@@ -177,3 +215,4 @@ if __name__ == "__main__":
             verify_missing_fish(browser, sys.argv[1])
             verify_sample_source(browser, sys.argv[1])
             verify_breathing(browser, sys.argv[1])
+            verify_ammonia_retest(browser, sys.argv[1])

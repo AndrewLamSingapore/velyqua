@@ -58,6 +58,7 @@ export type Activity = {
     | 'fish_found'
     | 'body_condition'
     | 'uncertain_nitrite'
+    | 'uncertain_ammonia'
     | 'breeding_observation'
     | 'equipment_service'
     | 'treatment';
@@ -184,7 +185,7 @@ export type Recommendation = {
   showBreathingHistory?: boolean;
   showLossHistory?: boolean;
   showConditionHistory?: boolean;
-  nitriteRetest?: string;
+  retestDetail?: string;
 };
 
 export type WaterChangePreview = {
